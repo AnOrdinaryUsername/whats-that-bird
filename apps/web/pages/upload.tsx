@@ -1,15 +1,31 @@
 import { Group, Stack, Text, rem } from "@mantine/core";
-import { Dropzone, DropzoneProps, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import {
+    Dropzone,
+    DropzoneProps,
+    FileWithPath,
+    IMAGE_MIME_TYPE,
+} from "@mantine/dropzone";
 import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
 
 export default function BaseDemo(props: Partial<DropzoneProps>) {
+    const onDrop = (file: FileWithPath[]) => {
+        const formData = new FormData();
+        formData.append("file", file[0]);
+
+        fetch("http://localhost:3000/api/upload", {
+            method: "POST",
+            body: formData,
+        }).then((res) => console.log(res.json()));
+    };
+
     return (
         <Stack align="center" justify="center" style={{ height: "100%" }}>
             <Dropzone
-                onDrop={(files) => console.log("accepted image", files)}
-                onReject={(files) => console.log("rejected image", files)}
-                maxSize={5 * 1024 ** 2}
+                onDrop={onDrop}
+                onReject={(file) => console.log("rejected image", file)}
+                maxSize={35 * 1024 ** 2}
                 accept={IMAGE_MIME_TYPE}
+                multiple={false}
                 style={{ cursor: "pointer" }}
                 {...props}
             >
