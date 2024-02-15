@@ -1,5 +1,6 @@
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
 import multipart from '@fastify/multipart';
+import { FILE_SIZE_LIMIT } from '@whats-that-bird/constants';
 import { FastifyPluginAsync } from 'fastify';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
@@ -23,7 +24,11 @@ const app: FastifyPluginAsync<AppOptions> = async (
     fastify,
     opts
 ): Promise<void> => {
-    fastify.register(multipart);
+    fastify.register(multipart, {
+        limits: {
+            fileSize: FILE_SIZE_LIMIT
+        }
+    });
 
     fastify.register(upload, { prefix: '/api' })
   // Do not touch the following lines

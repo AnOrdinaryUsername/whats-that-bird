@@ -6,6 +6,7 @@ import {
     IMAGE_MIME_TYPE,
 } from "@mantine/dropzone";
 import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
+import { FILE_SIZE_LIMIT } from "@whats-that-bird/constants";
 
 export default function BaseDemo(props: Partial<DropzoneProps>) {
     const onDrop = (file: FileWithPath[]) => {
@@ -15,6 +16,7 @@ export default function BaseDemo(props: Partial<DropzoneProps>) {
         fetch("http://localhost:3000/api/upload", {
             method: "POST",
             body: formData,
+            mode: "no-cors",
         }).then((res) => console.log(res.json()));
     };
 
@@ -23,7 +25,7 @@ export default function BaseDemo(props: Partial<DropzoneProps>) {
             <Dropzone
                 onDrop={onDrop}
                 onReject={(file) => console.log("rejected image", file)}
-                maxSize={35 * 1024 ** 2}
+                maxSize={FILE_SIZE_LIMIT}
                 accept={IMAGE_MIME_TYPE}
                 multiple={false}
                 style={{ cursor: "pointer" }}
