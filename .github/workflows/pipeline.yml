@@ -1,0 +1,25 @@
+name: Format and Type Check
+
+on:
+    push:
+        branches: [master]
+
+jobs:
+    format:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: pnpm/action-setup@v3
+              with:
+                  version: 8
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: "pnpm"
+            - name: Install dependencies recursively
+              run: pnpm i -r
+            - name: Format files
+              run: pnpm exec lerna run format
+            - name: Type check files
+              run: pnpm exec lerna run check-types

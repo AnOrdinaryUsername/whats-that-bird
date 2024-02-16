@@ -6,7 +6,9 @@
     "dev": "next dev -p 8000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --config .prettierc.json --write **/*.{ts,tsx}",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@mantine/core": "^7.5.1",
