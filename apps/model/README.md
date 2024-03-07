@@ -24,12 +24,12 @@ Install requirements.txt
 python3 -m pip install -r requirements.txt
 ```
 
-Train a model
+Train a model (after getting dataset from roboflow)
 
 ```bash
-python3 train.py
+python3 ./src/train.py
 ```
 
 | Original Image                       | Object Detection                                      |
 | ------------------------------------ | ----------------------------------------------------- |
-| ![Mallards](/apps/model/mallard.jpg) | ![Mallards with bounding box](/apps/model/result.jpg) |
+| ![Mallards](/apps/model/examples/owl.jpg) | ![Mallards with bounding box](/apps/model/examples/result.jpg) |

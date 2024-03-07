@@ -1,5 +1,19 @@
-runs/
+# Python-related
 venv/
 .venv
 __pycache__/
+
+# Pretrained model
+yolov8s.pt
 yolov8n.pt
+
+# Images collected from flickr
+data
+
+# Training runs
+runs/
+
+# Datasets
+train/
+valid/
+test/

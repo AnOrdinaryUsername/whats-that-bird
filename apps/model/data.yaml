@@ -1,0 +1,13 @@
+train: ./train/images
+val: ./valid/images
+test: ./test/images
+
+nc: 31
+names: ['Allen-s-Hummingbird', 'American-Coot', 'American-Kestrel', 'American-White-Pelican', 'American-Wigeon', 'Anna-s-Hummingbird', 'Belted-Kingfisher', 'Black-Phoebe', 'Black-crowned-Night-Heron', 'Cinnamon-Teal', 'Cooper-s-Hawk', 'Double-crested-Cormorant', 'Downy-Woodpecker', 'Great-Blue-Heron', 'Great-Egret', 'Great-Horned-Owl', 'Green-Heron', 'Lesser-Scaup', 'Mallard', 'Northern-Flicker', 'Northern-Pintail', 'Northern-Shoveler', 'Osprey', 'Pied-billed-Grebe', 'Red-shouldered-Hawk', 'Red-tailed-Hawk', 'Ring-necked-duck', 'Ruddy-Duck', 'Snowy-Egret', 'Turkey-Vulture', 'Western-Scrub-Jay']
+
+roboflow:
+  workspace: kyle-masa-vvvcu
+  project: southern-california-birds
+  version: 2
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/kyle-masa-vvvcu/southern-california-birds/dataset/2
