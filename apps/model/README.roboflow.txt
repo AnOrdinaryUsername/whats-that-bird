@@ -1,8 +1,8 @@
 
-southern-california-birds - v2 2024-03-07 2:18am
+southern-california-birds - v3 2024-03-07 11:55am
 ==============================
 
-This dataset was exported via roboflow.com on March 7, 2024 at 10:19 AM GMT
+This dataset was exported via roboflow.com on March 7, 2024 at 7:58 PM GMT
 
 Roboflow is an end-to-end computer vision platform that helps you
 * collaborate with your team on computer vision projects
@@ -17,7 +17,7 @@ visit https://github.com/roboflow/notebooks
 
 To find over 100k other datasets and pre-trained models, visit https://universe.roboflow.com
 
-The dataset includes 451 images.
+The dataset includes 452 images.
 Birds are annotated in YOLOv8 format.
 
 The following pre-processing was applied to each image:

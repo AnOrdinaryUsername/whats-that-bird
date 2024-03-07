@@ -10,12 +10,12 @@ TODO: Make a flask server that accepts images
 # Load a pretrained YOLO model
 model = YOLO('yolov8s.pt')
 
-# Train the model using the 'coco8.yaml' dataset for 3 epochs
+# Train the model using bird dataset from roboflow
 model.train(
     data='data.yaml', 
     epochs=100,
     imgsz=256,
-    batch=4,
+    batch=8,
     project=os.path.join(os.getcwd(), 'runs')
 )
 

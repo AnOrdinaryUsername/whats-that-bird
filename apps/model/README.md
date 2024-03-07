@@ -32,4 +32,4 @@ python3 ./src/train.py
 
 | Original Image                       | Object Detection                                      |
 | ------------------------------------ | ----------------------------------------------------- |
-| ![Mallards](/apps/model/examples/owl.jpg) | ![Mallards with bounding box](/apps/model/examples/result.jpg) |
+| ![Mallards](/apps/model/examples/pelican.jpg) | ![Mallards with bounding box](/apps/model/examples/pelican_result.jpg) |

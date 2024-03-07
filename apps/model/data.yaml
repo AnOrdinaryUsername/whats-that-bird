@@ -8,6 +8,6 @@ names: ['Allen-s-Hummingbird', 'American-Coot', 'American-Kestrel', 'American-Wh
 roboflow:
   workspace: kyle-masa-vvvcu
   project: southern-california-birds
-  version: 2
+  version: 3
   license: CC BY 4.0
-  url: https://universe.roboflow.com/kyle-masa-vvvcu/southern-california-birds/dataset/2
+  url: https://universe.roboflow.com/kyle-masa-vvvcu/southern-california-birds/dataset/3
