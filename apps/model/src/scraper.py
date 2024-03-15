@@ -2,46 +2,13 @@ from flickrapi import FlickrAPI
 import os
 import requests
 from dotenv import load_dotenv
-from typing import Generator, Any
-
+from typing import Generator, List, Any
+import click
+import csv
+import itertools
+import asyncio
 
 load_dotenv()
-
-
-birds = [
-    "Mallard",
-    "American Wigeon",
-    "Northern Pintail",
-    "Northern Shoveler",
-    "Cinnamon Teal",
-    "Ring-necked duck",
-    "Lesser Scaup",
-    "Ruddy Duck",
-    "Pied-billed Grebe",
-    "American White Pelican",
-    "Double-crested Cormorant",
-    "Black-crowned Night-Heron",
-    "Green Heron",
-    "Snowy Egret",
-    "Great Egret",
-    "Great Blue Heron",
-    "Turkey Vulture",
-    "Osprey",
-    "Cooper’s Hawk",
-    "Red-shouldered Hawk",
-    "Red-tailed Hawk",
-    "American Kestrel",
-    "American Coot",
-    "Great Horned Owl",
-    "Anna’s Hummingbird",
-    "Allen’s Hummingbird",
-    "Belted Kingfisher",
-    "Northern Flicker",
-    "Downy Woodpecker",
-    "Black Phoebe",
-    "Western Scrub-Jay",
-]
-
 images_per_species = 100
 
 
@@ -70,7 +37,7 @@ def get_photos(image_tag: str) -> Generator[Any, Any, None]:
     secret = check_env_var("FLICKR_SECRET")
 
     flickr = FlickrAPI(api_key, secret)
-    
+
     """
     All license values according to flickr.photos.licenses.getInfo.
     See: https://www.flickr.com/services/api/flickr.photos.licenses.getInfo.htm
@@ -90,7 +57,7 @@ def get_photos(image_tag: str) -> Generator[Any, Any, None]:
     </licenses>
     """
     photos = flickr.walk(
-        text=image_tag,
+        text=f"{image_tag} -plane -aircraft -military -art -cat -dog",
         privacy_filter=PUBLIC_PHOTOS,
         per_page=images_per_species,
         sort="relevance",
@@ -101,24 +68,112 @@ def get_photos(image_tag: str) -> Generator[Any, Any, None]:
     return photos
 
 
+def get_bird_species() -> List[str]:
+    csv_file_path = "california_birds.csv"
+
+    rows = []
+
+    with open(csv_file_path, mode="r") as file:
+        reader = csv.reader(file)
+        rows.extend(reader)
+
+    flat_list = list(itertools.chain(*rows))
+
+    return flat_list
+
+
+def get_total_photos(image_tag: str) -> int:
+    PUBLIC_PHOTOS = 1
+    PHOTOS_ONLY = 0
+
+    api_key = check_env_var("FLICKR_API_KEY")
+    secret = check_env_var("FLICKR_SECRET")
+
+    flickr = FlickrAPI(api_key, secret, format="parsed-json")
+
+    # Set your search parameters
+    search_params = {
+        "text": f"{image_tag} -plane -aircraft -military -art -cat -dog",
+        "privacy_filter": PUBLIC_PHOTOS,
+        "per_page": images_per_species,
+        "sort": "relevance",
+        "license": "1,2,3,4,5,6,7,8,9,10",
+        "content_types": PHOTOS_ONLY,
+    }
+
+    # Perform the initial search to get the total number of photos
+    search_result = flickr.photos.search(**search_params)
+    total = search_result["photos"]["total"]
+
+    return total
+
+
 def make_dir(path: str) -> None:
     if not os.path.isdir(path):
         os.makedirs(path)
 
 
+def background(f):
+    def wrapped(*args, **kwargs):
+        return asyncio.get_event_loop().run_in_executor(None, f, *args, **kwargs)
+
+    return wrapped
+
+
+@background
+def download(url: str, bird_dir: str, bird: str, i: int) -> None:
+    response = requests.get(url, stream=True)
+    file_name = f"{bird}_{i}.jpg"
+    image_path = os.path.join(bird_dir, file_name)
+
+    with open(image_path, "wb") as file:
+        for chunk in response.iter_content(chunk_size=1024):
+            if chunk:
+                file.write(chunk)
+
+
 if __name__ == "__main__":
-    print("Beginning flickr image scraping")
+    click.echo(
+        click.style(
+            "Beginning flickr image scraping",
+            fg="cyan",
+        )
+    )
+
+    birds = get_bird_species()
 
     dataset_dir = "data"
     make_dir(dataset_dir)
 
+    # If there isn't enough photos for data collection,
+    # we don't create a class for them
+    excluded_species = []
+    INSUFFICIENT_DATA = 40
+
     for bird in birds:
-        print(f"\nCreating {bird} directory...")
+
+        total = get_total_photos(bird)
+
+        if total < INSUFFICIENT_DATA:
+            click.echo(
+                click.style(
+                    f"\nInsufficient data for '{bird}'. Skipping downloads...",
+                    fg="red",
+                ),
+            )
+
+            with open("excluded_species.txt", "a") as file:
+                file.write(f"Species: {bird}, Images available: {total}\n")
+
+            excluded_species.append(bird)
+            continue
+
+        photos = get_photos(bird)
+
+        click.echo(click.style(f"\nCreating {bird} directory...", fg="yellow"))
 
         bird_dir = os.path.join(os.getcwd(), dataset_dir, bird)
         make_dir(bird_dir)
-
-        photos = get_photos(bird)
 
         for i, photo in enumerate(photos):
             if i >= images_per_species:
@@ -133,13 +188,17 @@ if __name__ == "__main__":
                 secret = photo.get("secret")
                 url = f"https://farm{farm_id}.staticflickr.com/{server}/{photo_id}_{secret}.jpg"
 
-            print(f"{i + 1}) {url}")
+            # Uses cooperative multitasking for fast downloads
+            download(url, bird_dir, bird, i)
 
-            image_path = os.path.join(bird_dir, f"{bird}_{i}.jpg")
+    click.echo(click.style("\nFinished downloading", fg="green"))
 
-            with open(image_path, "wb") as file:
-                file.write(requests.get(url).content)
+    if len(excluded_species) > 0:
+        click.echo(
+            click.style(
+                "Excluded the following species due to lack of data:",
+                fg="red",
+            ),
+        )
 
-            print(f"Saved {bird} image to {image_path}")
-
-    print("\n\nFinished downloading")
+        print(*excluded_species, sep="\n")
