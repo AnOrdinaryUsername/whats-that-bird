@@ -7,6 +7,8 @@ import click
 import csv
 import itertools
 import asyncio
+import filetype
+import time
 
 load_dotenv()
 images_per_species = 100
@@ -83,6 +85,15 @@ def get_bird_species() -> List[str]:
 
 
 def get_total_photos(image_tag: str) -> int:
+    '''
+    Perform the initial search to get the total number of photos.
+
+    NOTE: The total photos count changes with every call, even with
+    the same inputs.
+    
+    I am not sure why, but you can test it here yourself:
+    https://www.flickr.com/services/api/explore/flickr.photos.search
+    '''
     PUBLIC_PHOTOS = 1
     PHOTOS_ONLY = 0
 
@@ -100,8 +111,7 @@ def get_total_photos(image_tag: str) -> int:
         "license": "1,2,3,4,5,6,7,8,9,10",
         "content_types": PHOTOS_ONLY,
     }
-
-    # Perform the initial search to get the total number of photos
+    
     search_result = flickr.photos.search(**search_params)
     total = search_result["photos"]["total"]
 
@@ -122,28 +132,46 @@ def background(f):
 
 @background
 def download(url: str, bird_dir: str, bird: str, i: int) -> None:
-    response = requests.get(url, stream=True)
+    response = requests.get(url)
     file_name = f"{bird}_{i}.jpg"
     image_path = os.path.join(bird_dir, file_name)
 
-    with open(image_path, "wb") as file:
-        for chunk in response.iter_content(chunk_size=1024):
-            if chunk:
-                file.write(chunk)
+    if response.status_code == 200:
+        with open(image_path, "wb") as file:
+            file.write(response.content)
+        
 
 
-if __name__ == "__main__":
-    click.echo(
-        click.style(
-            "Beginning flickr image scraping",
-            fg="cyan",
-        )
-    )
+def check_broken_images(root_path):
+    broken_images = []
 
-    birds = get_bird_species()
+    for _, dirs, _ in os.walk(root_path, topdown=False):
+        for bird in dirs:
+            bird_dir = os.path.join(root_path, bird)
 
-    dataset_dir = "data"
-    make_dir(dataset_dir)
+            for file in os.listdir(bird_dir):
+                if not filetype.is_image(os.path.join(bird_dir, file)):
+                    broken_images.append(bird)
+                    break
+
+    return broken_images
+
+
+def check_empty_dirs(root_path) -> List[str]:
+    empty_dirs = []
+
+    for _, dirs, _ in os.walk(root_path, topdown=False):
+        for bird in dirs:
+            bird_dir = os.path.join(root_path, bird)
+
+            if not os.listdir(bird_dir):
+                empty_dirs.append(bird)
+
+    return empty_dirs
+
+
+def generate_dataset(dir_name: str, birds: List[str]) -> None:
+    make_dir(dir_name)
 
     # If there isn't enough photos for data collection,
     # we don't create a class for them
@@ -172,8 +200,10 @@ if __name__ == "__main__":
 
         click.echo(click.style(f"\nCreating {bird} directory...", fg="yellow"))
 
-        bird_dir = os.path.join(os.getcwd(), dataset_dir, bird)
+        bird_dir = os.path.join(os.getcwd(), dir_name, bird)
         make_dir(bird_dir)
+
+        tasks = []
 
         for i, photo in enumerate(photos):
             if i >= images_per_species:
@@ -189,7 +219,33 @@ if __name__ == "__main__":
                 url = f"https://farm{farm_id}.staticflickr.com/{server}/{photo_id}_{secret}.jpg"
 
             # Uses cooperative multitasking for fast downloads
-            download(url, bird_dir, bird, i)
+            task = download(url, bird_dir, bird, i)
+            tasks.append(task)
+        
+        asyncio.get_event_loop().run_until_complete(asyncio.wait(tasks))
+
+    root = os.path.join(os.getcwd(), dir_name)
+    empty_dirs = check_empty_dirs(root)
+
+    if empty_dirs:
+        click.echo(
+            click.style(
+                f"Detected {len(empty_dirs)} empty bird directories. Retrying download...",
+                fg="red",
+            ),
+        )
+        generate_dataset(empty_dirs)
+
+    broken_images = check_broken_images(root)
+
+    if broken_images:
+        click.echo(
+            click.style(
+                f"Found broken images in {len(broken_images)} bird directories. Retrying download...",
+                fg="red",
+            ),
+        )
+        generate_dataset(broken_images)
 
     click.echo(click.style("\nFinished downloading", fg="green"))
 
@@ -202,3 +258,19 @@ if __name__ == "__main__":
         )
 
         print(*excluded_species, sep="\n")
+
+
+if __name__ == "__main__":
+    click.echo(
+        click.style(
+            "Beginning flickr image scraping",
+            fg="cyan",
+        )
+    )
+
+    dataset_dir = "data"
+    birds = get_bird_species()
+
+    generate_dataset(dataset_dir, birds)
+
+    asyncio.get_event_loop().close()
