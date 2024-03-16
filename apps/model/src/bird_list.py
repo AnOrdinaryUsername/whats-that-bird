@@ -29,9 +29,6 @@ print(f"\nAcquired names of {len(birds)} bird species in California")
 with open("california_birds.csv", mode="w+") as file:
     # Create a CSV writer object
     writer = csv.writer(file)
-
-    # Write each string from the list as a row in the CSV file
-    for bird in birds:
-        writer.writerow([bird])
+    writer.writerow(birds)
 
 print("\nSaved all species to 'california_birds.csv'")
