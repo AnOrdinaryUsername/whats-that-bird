@@ -1,13 +1,661 @@
-train: ./train/images
-val: ./valid/images
-test: ./test/images
-
-nc: 31
-names: ['Allen-s-Hummingbird', 'American-Coot', 'American-Kestrel', 'American-White-Pelican', 'American-Wigeon', 'Anna-s-Hummingbird', 'Belted-Kingfisher', 'Black-Phoebe', 'Black-crowned-Night-Heron', 'Cinnamon-Teal', 'Cooper-s-Hawk', 'Double-crested-Cormorant', 'Downy-Woodpecker', 'Great-Blue-Heron', 'Great-Egret', 'Great-Horned-Owl', 'Green-Heron', 'Lesser-Scaup', 'Mallard', 'Northern-Flicker', 'Northern-Pintail', 'Northern-Shoveler', 'Osprey', 'Pied-billed-Grebe', 'Red-shouldered-Hawk', 'Red-tailed-Hawk', 'Ring-necked-duck', 'Ruddy-Duck', 'Snowy-Egret', 'Turkey-Vulture', 'Western-Scrub-Jay']
-
-roboflow:
-  workspace: kyle-masa-vvvcu
-  project: southern-california-birds
-  version: 3
-  license: CC BY 4.0
-  url: https://universe.roboflow.com/kyle-masa-vvvcu/southern-california-birds/dataset/3
+names:
+  0: Aberts Towhee
+  1: Acorn Woodpecker
+  2: Alder Flycatcher
+  3: Allens Hummingbird
+  4: American Avocet
+  5: American Bittern
+  6: American Black Duck
+  7: American Coot
+  8: American Crow
+  9: American Dipper
+  10: American Golden-Plover
+  11: American Goldfinch
+  12: American Kestrel
+  13: American Oystercatcher
+  14: American Pipit
+  15: American Redstart
+  16: American Robin
+  17: American Tree Sparrow
+  18: American White Pelican
+  19: American Wigeon
+  20: American Woodcock
+  21: Ancient Murrelet
+  22: Anhinga
+  23: Annas Hummingbird
+  24: Arctic Loon
+  25: Arctic Tern
+  26: Ash-throated Flycatcher
+  27: Ashy Storm-Petrel
+  28: Baikal Teal
+  29: Bairds Sandpiper
+  30: Bairds Sparrow
+  31: Bald Eagle
+  32: Baltimore Oriole
+  33: Band-tailed Pigeon
+  34: Bank Swallow
+  35: Bar-tailed Godwit
+  36: Barn Owl
+  37: Barn Swallow
+  38: Barred Owl
+  39: Barrows Goldeneye
+  40: Bay-breasted Warbler
+  41: Belchers Gull
+  42: Bells Sparrow
+  43: Bells Vireo
+  44: Belted Kingfisher
+  45: Bendires Thrasher
+  46: Bewicks Wren
+  47: Black Oystercatcher
+  48: Black Phoebe
+  49: Black Rail
+  50: Black Rosy-Finch
+  51: Black Scoter
+  52: Black Skimmer
+  53: Black Storm-Petrel
+  54: Black Swift
+  55: Black Tern
+  56: Black Turnstone
+  57: Black Vulture
+  58: Black-and-white Warbler
+  59: Black-backed Woodpecker
+  60: Black-bellied Plover
+  61: Black-bellied Whistling-Duck
+  62: Black-billed Cuckoo
+  63: Black-billed Magpie
+  64: Black-capped Chickadee
+  65: Black-chinned Hummingbird
+  66: Black-chinned Sparrow
+  67: Black-crowned Night-Heron
+  68: Black-footed Albatross
+  69: Black-headed Grosbeak
+  70: Black-headed Gull
+  71: Black-legged Kittiwake
+  72: Black-necked Stilt
+  73: Black-tailed Gnatcatcher
+  74: Black-tailed Gull
+  75: Black-throated Blue Warbler
+  76: Black-throated Gray Warbler
+  77: Black-throated Green Warbler
+  78: Black-throated Sparrow
+  79: Black-vented Shearwater
+  80: Blackburnian Warbler
+  81: Blackpoll Warbler
+  82: Blue Grosbeak
+  83: Blue Jay
+  84: Blue Mockingbird
+  85: Blue-footed Booby
+  86: Blue-gray Gnatcatcher
+  87: Blue-headed Vireo
+  88: Blue-winged Teal
+  89: Blue-winged Warbler
+  90: Bluethroat
+  91: Bobolink
+  92: Bohemian Waxwing
+  93: Bonapartes Gull
+  94: Brambling
+  95: Brandts Cormorant
+  96: Brant
+  97: Brewers Blackbird
+  98: Brewers Sparrow
+  99: Bridled Tern
+  100: Bristle-thighed Curlew
+  101: Broad-billed Hummingbird
+  102: Broad-tailed Hummingbird
+  103: Broad-winged Hawk
+  104: Bronzed Cowbird
+  105: Brown Booby
+  106: Brown Creeper
+  107: Brown Pelican
+  108: Brown Shrike
+  109: Brown Thrasher
+  110: Brown-crested Flycatcher
+  111: Brown-headed Cowbird
+  112: Buff-breasted Flycatcher
+  113: Buff-breasted Sandpiper
+  114: Bufflehead
+  115: Bullers Shearwater
+  116: Bullocks Oriole
+  117: Bulwers Petrel
+  118: Burrowing Owl
+  119: Bushtit
+  120: Cackling Goose
+  121: Cactus Wren
+  122: California Condor
+  123: California Gnatcatcher
+  124: Ruff
+  125: California Gull
+  126: California Quail
+  127: California Scrub-Jay
+  128: California Thrasher
+  129: California Towhee
+  130: Calliope Hummingbird
+  131: Canada Goose
+  132: Canada Jay
+  133: Canada Warbler
+  134: Canvasback
+  135: Canyon Wren
+  136: Cape May Warbler
+  137: Caspian Tern
+  138: Cassins Auklet
+  139: Cassins Finch
+  140: Cassins Kingbird
+  141: Cassins Sparrow
+  142: Cassins Vireo
+  143: Cattle Egret
+  144: Cave Swallow
+  145: Cedar Waxwing
+  146: Cerulean Warbler
+  147: Chestnut-backed Chickadee
+  148: Chestnut-collared Longspur
+  149: Chestnut-sided Warbler
+  150: Chimney Swift
+  151: Chipping Sparrow
+  152: Chuck-wills-widow
+  153: Chukar
+  154: Cinnamon Teal
+  155: Citrine Wagtail
+  156: Clarks Grebe
+  157: Clarks Nutcracker
+  158: Clay-colored Sparrow
+  159: Cliff Swallow
+  160: Common Black Hawk
+  161: Common Crane
+  162: Common Cuckoo
+  163: Common Eider
+  164: Common Gallinule
+  165: Common Goldeneye
+  166: Common Grackle
+  167: Common Greenshank
+  168: Common Ground Dove
+  169: Common Loon
+  170: Common Merganser
+  171: Common Murre
+  172: Common Nighthawk
+  173: Common Pochard
+  174: Common Poorwill
+  175: Common Raven
+  176: Common Redpoll
+  177: Common Ringed Plover
+  178: Common Rosefinch
+  179: Common Scoter
+  180: Common Snipe
+  181: Common Swift
+  182: Common Tern
+  183: Common Yellowthroat
+  184: Connecticut Warbler
+  185: Coopers Hawk
+  186: Corys Shearwater
+  187: Costas Hummingbird
+  188: Couchs Kingbird
+  189: Crested Auklet
+  190: Crested Caracara
+  191: Crissal Thrasher
+  192: Curlew Sandpiper
+  193: Curve-billed Thrasher
+  194: Dark-eyed Junco
+  195: Demoiselle Crane
+  196: Dickcissel
+  197: Double-crested Cormorant
+  198: Downy Woodpecker
+  199: Dunlin
+  200: Dusky Flycatcher
+  201: Dusky Warbler
+  202: Dusky-capped Flycatcher
+  203: Eared Grebe
+  204: Eastern Kingbird
+  205: Eastern Meadowlark
+  206: Eastern Phoebe
+  207: Eastern Whip-poor-will
+  208: Eastern Wood-Pewee
+  209: Eastern Yellow Wagtail
+  210: Elegant Tern
+  211: Elf Owl
+  212: Emperor Goose
+  213: Eurasian Collared-Dove
+  214: Eurasian Dotterel
+  215: Eurasian Kestrel
+  216: Eurasian Skylark
+  217: Eurasian Wigeon
+  218: Eurasian Wryneck
+  219: European Starling
+  220: Evening Grosbeak
+  221: Falcated Duck
+  222: Ferruginous Hawk
+  223: Field Sparrow
+  224: Flammulated Owl
+  225: Flesh-footed Shearwater
+  226: Fork-tailed Flycatcher
+  227: Fork-tailed Storm-Petrel
+  228: Forsters Tern
+  229: Fox Sparrow
+  230: Franklins Gull
+  231: Fulvous Whistling-Duck
+  232: Gadwall
+  233: Gambels Quail
+  234: Garganey
+  235: Gila Woodpecker
+  236: Gilded Flicker
+  237: Glaucous Gull
+  238: Glaucous-winged Gull
+  239: Glossy Ibis
+  240: Golden Eagle
+  241: Golden-cheeked Warbler
+  242: Golden-crowned Kinglet
+  243: Golden-crowned Sparrow
+  244: Golden-winged Warbler
+  245: Grasshopper Sparrow
+  246: Gray Catbird
+  247: Gray Flycatcher
+  248: Gray Hawk
+  249: Gray Silky-flycatcher
+  250: Gray Thrasher
+  251: Gray Vireo
+  252: Gray Wagtail
+  253: Gray-cheeked Thrush
+  254: Gray-crowned Rosy-Finch
+  255: Gray-tailed Tattler
+  256: Great Black-backed Gull
+  257: Great Blue Heron
+  258: Great Crested Flycatcher
+  259: Great Egret
+  260: Great Frigatebird
+  261: Great Gray Owl
+  262: Great Horned Owl
+  263: Great Shearwater
+  264: Great-tailed Grackle
+  265: Greater Pewee
+  266: Greater Roadrunner
+  267: Greater Sage-Grouse
+  268: Greater Sand-Plover
+  269: Greater Scaup
+  270: Greater White-fronted Goose
+  271: Greater Yellowlegs
+  272: Green Heron
+  273: Green-tailed Towhee
+  274: Green-winged Teal
+  275: Groove-billed Ani
+  276: Gull-billed Tern
+  277: Gyrfalcon
+  278: Hairy Woodpecker
+  279: Hammonds Flycatcher
+  280: Harlequin Duck
+  281: Harriss Hawk
+  282: Harriss Sparrow
+  283: Hawaiian Petrel
+  284: Heermanns Gull
+  285: Hepatic Tanager
+  286: Hermit Thrush
+  287: Hermit Warbler
+  288: Herring Gull
+  289: Hooded Merganser
+  290: Hooded Oriole
+  291: Hooded Warbler
+  292: Horned Grebe
+  293: Horned Lark
+  294: Horned Puffin
+  295: House Finch
+  296: House Sparrow
+  297: House Wren
+  298: Hudsonian Godwit
+  299: Huttons Vireo
+  300: Iceland Gull
+  301: Inca Dove
+  302: Indigo Bunting
+  303: Island Scrub-Jay
+  304: Ivory Gull
+  305: Jack Snipe
+  306: Juniper Titmouse
+  307: Kelp Gull
+  308: Kentucky Warbler
+  309: Killdeer
+  310: King Eider
+  311: Ladder-backed Woodpecker
+  312: Lapland Longspur
+  313: Lark Bunting
+  314: Lark Sparrow
+  315: Laughing Gull
+  316: Lawrences Goldfinch
+  317: Laysan Albatross
+  318: Lazuli Bunting
+  319: LeContes Sparrow
+  320: Leachs Storm-Petrel
+  321: Least Auklet
+  322: Least Bittern
+  323: Least Flycatcher
+  324: Least Grebe
+  325: Least Sandpiper
+  326: Least Tern
+  327: Lesser Black-backed Gull
+  328: Lesser Frigatebird
+  329: Lesser Goldfinch
+  330: Lesser Nighthawk
+  331: Lesser Sand-Plover
+  332: Lesser Scaup
+  333: Lesser Yellowlegs
+  334: Lewiss Woodpecker
+  335: Light-mantled Albatross
+  336: Lilac-crowned Parrot
+  337: Lincolns Sparrow
+  338: Little Blue Heron
+  339: Little Bunting
+  340: Little Curlew
+  341: Little Gull
+  342: Little Stint
+  343: Loggerhead Shrike
+  344: Long-billed Curlew
+  345: Long-billed Dowitcher
+  346: Long-eared Owl
+  347: Long-tailed Duck
+  348: Long-tailed Jaeger
+  349: Long-toed Stint
+  350: Louisiana Waterthrush
+  351: Lucys Warbler
+  352: MacGillivrays Warbler
+  353: Magnificent Frigatebird
+  354: Magnolia Warbler
+  355: Mallard
+  356: Manx Shearwater
+  357: Marbled Godwit
+  358: Marbled Murrelet
+  359: Marsh Sandpiper
+  360: Marsh Wren
+  361: Masked Booby
+  362: Merlin
+  363: Mexican Duck
+  364: Mississippi Kite
+  365: Mitred Parakeet
+  366: Mountain Bluebird
+  367: Mountain Chickadee
+  368: Mountain Plover
+  369: Mountain Quail
+  370: Mourning Dove
+  371: Mourning Warbler
+  372: Nanday Parakeet
+  373: Nashville Warbler
+  374: Nazca Booby
+  375: Nelsons Sparrow
+  376: Neotropic Cormorant
+  377: Northern Cardinal
+  378: Northern Flicker
+  379: Northern Fulmar
+  380: Northern Gannet
+  381: Northern Harrier
+  382: Northern Mockingbird
+  383: Northern Parula
+  384: Oak Titmouse
+  385: Northern Pintail
+  386: Northern Pygmy-Owl
+  387: Northern Rough-winged Swallow
+  388: Northern Saw-whet Owl
+  389: Northern Shoveler
+  390: Northern Shrike
+  391: Northern Waterthrush
+  392: Northern Wheatear
+  393: Nuttalls Woodpecker
+  394: Nuttings Flycatcher
+  395: Olive-backed Pipit
+  396: Olive-sided Flycatcher
+  397: Orange-crowned Warbler
+  398: Orchard Oriole
+  399: Oriental Greenfinch
+  400: Oriental Turtle-Dove
+  401: Osprey
+  402: Ovenbird
+  403: Pacific Golden-Plover
+  404: Pacific Loon
+  405: Pacific Wren
+  406: Painted Bunting
+  407: Painted Redstart
+  408: Palm Warbler
+  409: Parakeet Auklet
+  410: Parasitic Jaeger
+  411: Parkinsons Petrel
+  412: Pectoral Sandpiper
+  413: Pelagic Cormorant
+  414: Peregrine Falcon
+  415: Phainopepla
+  416: Philadelphia Vireo
+  417: Pied-billed Grebe
+  418: Pigeon Guillemot
+  419: Pileated Woodpecker
+  420: Pine Grosbeak
+  421: Pine Siskin
+  422: Pine Warbler
+  423: Pink-footed Shearwater
+  424: Pinyon Jay
+  425: Piping Plover
+  426: Plumbeous Vireo
+  427: Pomarine Jaeger
+  428: Prairie Falcon
+  429: Prairie Warbler
+  430: Prothonotary Warbler
+  431: Purple Finch
+  432: Purple Gallinule
+  433: Purple Martin
+  434: Purple Sandpiper
+  435: Pygmy Nuthatch
+  436: Pyrrhuloxia
+  437: Red Crossbill
+  438: Red Knot
+  439: Red Phalarope
+  440: Red-billed Tropicbird
+  441: Red-breasted Merganser
+  442: Red-breasted Nuthatch
+  443: Red-breasted Sapsucker
+  444: Red-crowned Parrot
+  445: Red-eyed Vireo
+  446: Red-faced Warbler
+  447: Red-flanked Bluetail
+  448: Red-footed Booby
+  449: Red-headed Woodpecker
+  450: Red-legged Kittiwake
+  451: Red-masked Parakeet
+  452: Red-naped Sapsucker
+  453: Red-necked Grebe
+  454: Red-necked Phalarope
+  455: Red-necked Stint
+  456: Red-shouldered Hawk
+  457: Red-tailed Hawk
+  458: Red-tailed Tropicbird
+  459: Red-throated Loon
+  460: Red-throated Pipit
+  461: Red-whiskered Bulbul
+  462: Red-winged Blackbird
+  463: Reddish Egret
+  464: Redhead
+  465: Rhinoceros Auklet
+  466: Ridgways Rail
+  467: Ring-billed Gull
+  468: Ring-necked Duck
+  469: Ring-necked Pheasant
+  470: Ringed Storm-Petrel
+  471: Rivolis Hummingbird
+  472: Rock Pigeon
+  473: Rock Sandpiper
+  474: Rock Wren
+  475: Rose-breasted Grosbeak
+  476: Roseate Spoonbill
+  477: Rosss Goose
+  478: Rosss Gull
+  479: Rough-legged Hawk
+  480: Royal Tern
+  481: Ruby-crowned Kinglet
+  482: Ruby-throated Hummingbird
+  483: Ruddy Duck
+  484: Ruddy Ground Dove
+  485: Ruddy Turnstone
+  486: Ruffed Grouse
+  487: Rufous Hummingbird
+  488: Rufous-backed Robin
+  489: Rufous-crowned Sparrow
+  490: Rustic Bunting
+  491: Rusty Blackbird
+  492: Sabines Gull
+  493: Sage Thrasher
+  494: Sagebrush Sparrow
+  495: Salvins Albatross
+  496: Sanderling
+  497: Sandhill Crane
+  498: Sandwich Tern
+  499: Savannah Sparrow
+  500: Says Phoebe
+  501: Scaly-breasted Munia
+  502: Scarlet Tanager
+  503: Scissor-tailed Flycatcher
+  504: Scotts Oriole
+  505: Scrippss Murrelet
+  506: Sedge Wren
+  507: Semipalmated Plover
+  508: Semipalmated Sandpiper
+  509: Sharp-shinned Hawk
+  510: Sharp-tailed Grouse
+  511: Sharp-tailed Sandpiper
+  512: Short-billed Dowitcher
+  513: Short-billed Gull
+  514: Short-eared Owl
+  515: Short-tailed Albatross
+  516: Short-tailed Shearwater
+  517: Siberian Rubythroat
+  518: Slaty-backed Gull
+  519: Smew
+  520: Smiths Longspur
+  521: Snow Bunting
+  522: Snow Goose
+  523: Snowy Egret
+  524: Snowy Owl
+  525: Snowy Plover
+  526: Solitary Sandpiper
+  527: Song Sparrow
+  528: Sooty Grouse
+  529: Sooty Shearwater
+  530: Sooty Tern
+  531: Sora
+  532: South Polar Skua
+  533: Spotted Dove
+  534: Spotted Owl
+  535: Spotted Redshank
+  536: Spotted Sandpiper
+  537: Spotted Towhee
+  538: Spragues Pipit
+  539: Stellers Eider
+  540: Stellers Jay
+  541: Stilt Sandpiper
+  542: Streak-backed Oriole
+  543: Streaked Shearwater
+  544: Sulphur-bellied Flycatcher
+  545: Summer Tanager
+  546: Surf Scoter
+  547: Surfbird
+  548: Swainsons Hawk
+  549: Swainsons Thrush
+  550: Swallow-tailed Gull
+  551: Swallow-tailed Kite
+  552: Swamp Sparrow
+  553: Taiga Flycatcher
+  554: Tennessee Warbler
+  555: Terek Sandpiper
+  556: Thick-billed Kingbird
+  557: Thick-billed Murre
+  558: Townsends Solitaire
+  559: Townsends Warbler
+  560: Tree Swallow
+  561: Tricolored Blackbird
+  562: Tricolored Heron
+  563: Tropical Kingbird
+  564: Tropical Parula
+  565: Trumpeter Swan
+  566: Tufted Duck
+  567: Tufted Puffin
+  568: Tundra Bean-Goose
+  569: Tundra Swan
+  570: Turkey Vulture
+  571: Upland Sandpiper
+  572: Varied Bunting
+  573: Varied Thrush
+  574: Vauxs Swift
+  575: Veery
+  576: Verdin
+  577: Vermilion Flycatcher
+  578: Vesper Sparrow
+  579: Violet-crowned Hummingbird
+  580: Violet-green Swallow
+  581: Virginia Rail
+  582: Virginias Warbler
+  583: Wandering Albatross
+  584: Wandering Tattler
+  585: Warbling Vireo
+  586: Wedge-tailed Shearwater
+  587: Western Bluebird
+  588: Western Flycatcher
+  589: Western Grebe
+  590: Western Gull
+  591: Western Kingbird
+  592: Western Meadowlark
+  593: Western Sandpiper
+  594: Western Screech-Owl
+  595: Western Tanager
+  596: Western Wood-Pewee
+  597: Whimbrel
+  598: White Ibis
+  599: White Wagtail
+  600: White-breasted Nuthatch
+  601: White-capped Albatross
+  602: White-chinned Petrel
+  603: White-collared Swift
+  604: White-crowned Sparrow
+  605: White-eyed Vireo
+  606: White-faced Ibis
+  607: White-headed Woodpecker
+  608: White-rumped Sandpiper
+  609: White-tailed Kite
+  610: White-tailed Ptarmigan
+  611: White-tailed Tropicbird
+  612: White-throated Sparrow
+  613: White-throated Swift
+  614: White-winged Crossbill
+  615: White-winged Dove
+  616: White-winged Scoter
+  617: White-winged Tern
+  618: Whooper Swan
+  619: Wild Turkey
+  620: Willet
+  621: Williamsons Sapsucker
+  622: Willow Flycatcher
+  623: Willow Warbler
+  624: Wilsons Phalarope
+  625: Wilsons Plover
+  626: Wilsons Snipe
+  627: Wilsons Storm-Petrel
+  628: Wilsons Warbler
+  629: Winter Wren
+  630: Wood Duck
+  631: Wood Sandpiper
+  632: Wood Stork
+  633: Wood Thrush
+  634: Wood Warbler
+  635: Woodhouses Scrub-Jay
+  636: Worm-eating Warbler
+  637: Wrentit
+  638: Yellow Grosbeak
+  639: Yellow Rail
+  640: Yellow Warbler
+  641: Yellow-bellied Flycatcher
+  642: Yellow-bellied Sapsucker
+  643: Yellow-billed Cuckoo
+  644: Yellow-billed Loon
+  645: Yellow-billed Magpie
+  646: Yellow-breasted Chat
+  647: Yellow-browed Warbler
+  648: Yellow-chevroned Parakeet
+  649: Yellow-crowned Night-Heron
+  650: Yellow-footed Gull
+  651: Yellow-green Vireo
+  652: Yellow-headed Blackbird
+  653: Yellow-rumped Warbler
+  654: Yellow-throated Vireo
+  655: Yellow-throated Warbler
+  656: Zone-tailed Hawk
+nc: 657
+train: train/images
+val: valid/images

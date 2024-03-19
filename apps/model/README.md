@@ -24,7 +24,7 @@ Install requirements.txt
 python3 -m pip install -r requirements.txt
 ```
 
-Train a model (after getting dataset from roboflow)
+Train a model (after getting dataset from [Kaggle](https://www.kaggle.com/datasets/anamethatiscreative/southern-california-birds))
 
 ```bash
 python3 ./src/train.py
