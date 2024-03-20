@@ -2,13 +2,12 @@ from bs4 import BeautifulSoup
 import requests
 import csv
 
-# List of all Californian birds from the California Bird Records Committee
+# List of all Californian birds seen naturally from the California Bird Records Committee
 url = "https://californiabirds.org/checklist.asp"
 
-# Send a GET request to the website
-response = requests.get(url)
 
 # Parse the HTML content of the website
+response = requests.get(url)
 soup = BeautifulSoup(response.text, "html.parser")
 
 # Extract all <p> tags with class 'species'
@@ -25,9 +24,8 @@ for bird in bird_species:
 # Check to make sure the species count on the website matches the list length
 print(f"\nAcquired names of {len(birds)} bird species in California")
 
-# Save all bird species to csv file
+# Write all bird species to csv file
 with open("california_birds.csv", mode="w+") as file:
-    # Create a CSV writer object
     writer = csv.writer(file)
     writer.writerow(birds)
 

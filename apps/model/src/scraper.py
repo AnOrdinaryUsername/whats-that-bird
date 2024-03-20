@@ -8,7 +8,6 @@ import csv
 import itertools
 import asyncio
 import filetype
-import time
 
 load_dotenv()
 images_per_species = 100
@@ -85,15 +84,15 @@ def get_bird_species() -> List[str]:
 
 
 def get_total_photos(image_tag: str) -> int:
-    '''
+    """
     Perform the initial search to get the total number of photos.
 
     NOTE: The total photos count changes with every call, even with
     the same inputs.
-    
+
     I am not sure why, but you can test it here yourself:
     https://www.flickr.com/services/api/explore/flickr.photos.search
-    '''
+    """
     PUBLIC_PHOTOS = 1
     PHOTOS_ONLY = 0
 
@@ -111,7 +110,7 @@ def get_total_photos(image_tag: str) -> int:
         "license": "1,2,3,4,5,6,7,8,9,10",
         "content_types": PHOTOS_ONLY,
     }
-    
+
     search_result = flickr.photos.search(**search_params)
     total = search_result["photos"]["total"]
 
@@ -139,7 +138,6 @@ def download(url: str, bird_dir: str, bird: str, i: int) -> None:
     if response.status_code == 200:
         with open(image_path, "wb") as file:
             file.write(response.content)
-        
 
 
 def check_broken_images(root_path):
@@ -221,7 +219,7 @@ def generate_dataset(dir_name: str, birds: List[str]) -> None:
             # Uses cooperative multitasking for fast downloads
             task = download(url, bird_dir, bird, i)
             tasks.append(task)
-        
+
         asyncio.get_event_loop().run_until_complete(asyncio.wait(tasks))
 
     root = os.path.join(os.getcwd(), dir_name)
