@@ -1,8 +1,11 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import dotenv from 'dotenv';
 import { FastifyPluginAsync } from "fastify";
+import * as secure from 'secure-json-parse';
+
 
 dotenv.config();
+
 
 const s3 = new S3Client({
     region: process.env.AWS_REGION!,
@@ -12,37 +15,149 @@ const s3 = new S3Client({
     }
 });
 
+
 const upload: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-  fastify.post('/upload', async function (request, reply) {
-    const image = await request.file();
+    fastify.post('/upload', async function (request, reply) {
+        
+        // reply.header("Access-Control-Allow-Origin", "*")
+        
+        const image = await request.file();
 
-    if (!image) {
-        reply
-            .status(400)
-            .header('Content-Type', 'application/json')
-            .send({ result: 'error'});
-        return;
-    }
+        if (!image) {
+            reply
+                .status(400)
+                .header('Content-Type', 'application/json')
+                .send({ result: 'error' });
+            return;
+        }
 
-    if (image.file.truncated) {
-        console.debug(`Size: ${image.file.bytesRead}`);
-        reply.send(new fastify.multipartErrors.FilesLimitError());    
-    }
+        const [_, extension] = image.filename.split('.')
+        const filename = `${crypto.randomUUID()}.${extension}`;
 
-    const putObjectCommand = new PutObjectCommand({
-        Bucket: process.env.AWS_BUCKET, 
-        Key: image.filename,
-        Body: await image.toBuffer(),
-        ContentType: image.mimetype,
-    });
+        const putObjectCommand = new PutObjectCommand({
+            Bucket: process.env.AWS_BUCKET,
+            Key: filename,
+            Body: await image.toBuffer(),
+            ContentType: image.mimetype,
+        });
 
-    await s3.send(putObjectCommand);
+        await s3.send(putObjectCommand);
 
-    reply
-        .status(200)
-        .header('Content-Type', 'application/json')
-        .send({ result: 'ok'});
-  })
+        let predictions: RunPodResponse;
+
+        try {
+            predictions = await runPredictions(filename);
+        } catch (error) {
+            reply
+                .status(500)
+                .header('Content-Type', 'application/json')
+                .send({ result: 'error', error })
+
+            return;
+        }
+
+
+        if ('output' in predictions) {
+            reply
+                .status(200)
+                .header('Content-Type', 'application/json')
+                .send({ result: 'ok', predictions: secure.parse(predictions.output) });
+        }
+    })
 }
+
+
+interface JobStatus {
+    id: string;
+    status: string;
+}
+
+interface ProcessingTime {
+    delayTime: number;
+    executionTime: number;
+}
+
+interface SuccessResponse extends JobStatus, ProcessingTime {
+    output: string;
+}
+
+export interface ErrorResponse extends JobStatus, ProcessingTime {
+    error: string;
+}
+
+type RunPodResponse = SuccessResponse | ErrorResponse
+
+
+async function runPredictions(key: string): Promise<RunPodResponse> {
+
+    const { AWS_BUCKET, RUNPOD_ENDPOINT, RUNPOD_API_KEY } = process.env;
+
+    const url = `https://${AWS_BUCKET}.s3.amazonaws.com/${key}`;
+
+    const data = {
+        input: {
+            url
+        }
+    };
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${RUNPOD_API_KEY}`
+    }
+
+    const current_run = await fetch(`https://api.runpod.ai/v2/${RUNPOD_ENDPOINT}/run`, {
+        method: 'POST',
+        headers: new Headers(headers),
+        body: JSON.stringify(data)
+    });
+    const run = await current_run.json() as JobStatus;
+
+    const { id } = run;
+
+    /*
+        Since it takes some time to get the prediction results, we have to poll the
+        RunPod API until it gives us a result.
+    */
+    const run_status = () => fetch(`https://api.runpod.ai/v2/${RUNPOD_ENDPOINT}/status/${id}`, {
+        headers: new Headers(headers)
+    });
+    const validate = (result: RunPodResponse) => result.status !== 'COMPLETED';
+    const handleError = (result: RunPodResponse) => {
+        if ('error' in result) {
+            throw new Error(result.error);
+        }
+    }
+
+    const TWO_SECONDS = 2000;
+    const predictions = await poll<RunPodResponse>(run_status, validate, handleError, TWO_SECONDS);
+
+    return predictions;
+}
+
+
+async function poll<T>(
+    fn: () => Promise<Response>,
+    fnCondition: (res: T) => boolean,
+    errorFn: (res: T) => void,
+    ms: number
+) {
+    let response = await fn();
+    let result = await response.json() as T;
+
+    while (fnCondition(result)) {
+        errorFn(result);
+        await wait(ms);
+        response = await fn()
+        result = await response.json() as T;
+    }
+    return result;
+};
+
+
+function wait(ms = 1000) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
+};
 
 export default upload;
