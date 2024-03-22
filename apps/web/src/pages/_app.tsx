@@ -36,6 +36,9 @@ const theme = createTheme({
     primary,
     gray,
   },
+  primaryColor: 'primary',
+  fontFamily: 'Poppins',
+  headings: { fontFamily: 'Rubik' }
 });
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -47,6 +50,7 @@ export default function App({ Component, pageProps }: AppProps) {
         body,
         #__next {
           height: 100%;
+          background: #DCE4F5;
         }
       `}</style>
     </MantineProvider>

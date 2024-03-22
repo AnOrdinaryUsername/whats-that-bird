@@ -8,11 +8,15 @@ export default function BaseDemo(props: Partial<DropzoneProps>) {
     const formData = new FormData();
     formData.append('file', file[0]);
 
-    fetch('http://localhost:3000/api/upload', {
+    const url = process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000'
+      : process.env.backendUrl;
+
+    fetch(`${url}/api/upload`, {
       method: 'POST',
       body: formData,
-      mode: 'no-cors',
-    }).then((res) => console.log(res.json()));
+    }).then(res => res.json())
+      .then(res => console.log(res));
   };
 
   return (

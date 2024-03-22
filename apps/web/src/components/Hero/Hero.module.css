@@ -1,0 +1,27 @@
+.stack {
+    border: 2px solid light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-4));
+    border-radius: rem(16px);
+    background: var(--mantine-color-white);
+}
+
+.bird {
+    animation: bounce 3.5s ease-in-out infinite;
+    will-change: transform;
+    position: absolute;
+    top: 80%;
+    width: rem(250px);
+}
+
+@keyframes bounce {
+    from {
+        transform: translate(0,  0px);
+      }
+    
+      50% {
+        transform: translate(0, -25px);
+      }
+    
+      to {
+        transform: translate(0, 0px);
+      }   
+}
