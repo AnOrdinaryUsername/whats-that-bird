@@ -21,7 +21,7 @@ const upload: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         
         const url = process.env.NODE_ENV === 'development'
             ? 'http://localhost:8000' 
-            : 'https://whats-that-bird.onrender.com';
+            : process.env.FRONTEND_URL;
             
         reply.header("access-control-allow-origin", url);
         reply.header("vary", "Origin");
