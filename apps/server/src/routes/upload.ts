@@ -19,7 +19,12 @@ const s3 = new S3Client({
 const upload: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     fastify.post('/upload', async function (request, reply) {
         
-        // reply.header("Access-Control-Allow-Origin", "*")
+        const url = process.env.NODE_ENV === 'development'
+            ? 'http://localhost:8000' 
+            : 'https://whats-that-bird.onrender.com';
+            
+        reply.header("access-control-allow-origin", url);
+        reply.header("vary", "Origin");
         
         const image = await request.file();
 
