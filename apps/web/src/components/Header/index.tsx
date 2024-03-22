@@ -34,7 +34,7 @@ export default function Header() {
     <header className={classes.header}>
       <Container size="lg" className={classes.inner}>
       <Group justify="space-between" h="100%" w="100%">
-        <Anchor href="/">What's That Bird?</Anchor>
+        <Anchor href="/">What&apos;s That Bird?</Anchor>
         <Group gap={5} visibleFrom="xs">
           {items}
         </Group>
