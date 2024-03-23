@@ -1,7 +1,7 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import dotenv from 'dotenv';
 import { FastifyPluginAsync } from "fastify";
-import * as secure from 'secure-json-parse';
+import { parse } from 'secure-json-parse';
 
 
 dotenv.config();
@@ -18,14 +18,14 @@ const s3 = new S3Client({
 
 const upload: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     fastify.post('/upload', async function (request, reply) {
-        
+
         const url = process.env.NODE_ENV === 'development'
-            ? 'http://localhost:8000' 
+            ? 'http://localhost:8000'
             : process.env.FRONTEND_URL;
-            
+
         reply.header("access-control-allow-origin", url);
         reply.header("vary", "Origin");
-        
+
         const image = await request.file();
 
         if (!image) {
@@ -48,10 +48,10 @@ const upload: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
         await s3.send(putObjectCommand);
 
-        let predictions: RunPodResponse;
+        let model_predictions: RunPodResponse;
 
         try {
-            predictions = await runPredictions(filename);
+            model_predictions = await runPredictions(filename);
         } catch (error) {
             reply
                 .status(500)
@@ -62,13 +62,40 @@ const upload: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         }
 
 
-        if ('output' in predictions) {
+        if ('output' in model_predictions) {
+            const { predictions, url } = model_predictions.output;
+            const annotations: Array<Prediction> = parse(predictions);
+
+            // Remove class number and bounding box coordinates from response
+            const simplified_details = annotations.map(
+                ({ class: a, box: b, ...rest }: Prediction) => rest
+            );
+
+            const results = {
+                info: [...simplified_details],
+                url
+            };
+
             reply
                 .status(200)
                 .header('Content-Type', 'application/json')
-                .send({ result: 'ok', predictions: secure.parse(predictions.output) });
+                .send({ result: 'ok', ...results });
         }
     })
+}
+
+interface BoundingBox {
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+}
+
+interface Prediction {
+    class: number;
+    box: BoundingBox;
+    confidence: number;
+    name: string;
 }
 
 
@@ -83,14 +110,17 @@ interface ProcessingTime {
 }
 
 interface SuccessResponse extends JobStatus, ProcessingTime {
-    output: string;
+    output: {
+        url: string,
+        predictions: string;
+    }
 }
 
 export interface ErrorResponse extends JobStatus, ProcessingTime {
     error: string;
 }
 
-type RunPodResponse = SuccessResponse | ErrorResponse
+type RunPodResponse = SuccessResponse | ErrorResponse;
 
 
 async function runPredictions(key: string): Promise<RunPodResponse> {
