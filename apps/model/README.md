@@ -64,6 +64,13 @@ Change directory to `docker/`
 cd docker
 ```
 
+Download `best.onnx` from releases, move it to `docker/`, and then test 
+RunPod inference to see if it works
+
+```sh
+python3 inference.py
+```
+
 Login to Docker to push to Docker Hub
 
 ```sh
