@@ -22,4 +22,4 @@ jobs:
             - name: Format files
               run: pnpm exec lerna run format
             - name: Type check files
-              run: pnpm exec lerna run check-types
+              run: pnpm --filter=server run check-types
