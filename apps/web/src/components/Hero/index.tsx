@@ -14,7 +14,7 @@ export default function Hero() {
   return (
     <>
       <Head>
-        <title>What's That Bird?</title>
+        <title>What&apos;s That Bird?</title>
         <meta charSet="utf-8" />
         <meta name="description" content="Identify Californian birds with the power of AI." />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
