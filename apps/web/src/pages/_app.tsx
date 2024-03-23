@@ -38,7 +38,7 @@ const theme = createTheme({
   },
   primaryColor: 'primary',
   fontFamily: 'Poppins',
-  headings: { fontFamily: 'Rubik' }
+  headings: { fontFamily: 'Rubik' },
 });
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -50,7 +50,7 @@ export default function App({ Component, pageProps }: AppProps) {
         body,
         #__next {
           height: 100%;
-          background: #DCE4F5;
+          background: #dce4f5;
         }
       `}</style>
     </MantineProvider>

@@ -4,7 +4,7 @@ import Hero from '@/components/Hero';
 
 export default function IndexPage() {
   return (
-    <Container size='lg'>
+    <Container size="lg">
       <Header />
       <Hero />
     </Container>
