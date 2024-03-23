@@ -36,6 +36,10 @@
         font-size: rem(18px);
       }
     }
+
+    & img {
+      cursor: pointer;
+    }
 }
 
 .buttons {
