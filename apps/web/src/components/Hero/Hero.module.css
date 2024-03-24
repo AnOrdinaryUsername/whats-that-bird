@@ -45,6 +45,15 @@
     }
 }
 
+.span {
+  display: block;
+  font: inherit;
+
+  @media (min-width: $mantine-breakpoint-xs) {
+    display: inline;
+  }
+}
+
 .buttons {
   flex-direction: column;
   align-items: stretch;

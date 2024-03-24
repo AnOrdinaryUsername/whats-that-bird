@@ -21,12 +21,15 @@ export default function Hero() {
       </Head>
       <Stack className={classes.stack} align="flex-start" justify="center" pos="relative">
         <Title order={1}>
-          Instantly Identify
+          Identify
           <Text component="b" variant="gradient" gradient={{ from: 'blue', to: 'cyan', deg: 90 }}>
             {' '}
-            Birds{' '}
+            California Birds{' '}
           </Text>
-          With Just One Click
+          With Just{' '}
+          <Text component="span" className={classes.span}>
+            One Click
+          </Text>
         </Title>
         <Text size="md" c="gray">
           Upload your image and our AI will take care of the work for you.
