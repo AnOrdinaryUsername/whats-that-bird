@@ -1,0 +1,23 @@
+.dropzone {
+    padding: rem(24px);
+    border: rem(2px) dashed var(--mantine-color-gray-2);
+    background-color: var(--mantine-color-gray-0);
+    border-radius: rem(16px);
+
+    @media (min-width: $mantine-breakpoint-sm) {
+        padding-left: rem(100px);
+        padding-right: rem(100px);
+    }
+}
+
+.text {
+    text-align: center;
+
+    & p:first {
+        font-size: rem(20px);
+    }
+
+    @media (min-width: $mantine-breakpoint-xs) {
+        text-align: left;
+    }
+}

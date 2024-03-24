@@ -3,6 +3,9 @@
     border-radius: rem(16px);
     background: var(--mantine-color-white);
     box-shadow: -3px 5px light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-4));
+    /*
+    box-shadow: rem(-24px) rem(28px) light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-2));
+    */
     padding: rem(40px) rem(20px);
     height: 100%;
 
