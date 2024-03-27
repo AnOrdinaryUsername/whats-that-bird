@@ -4,6 +4,7 @@ import '@mantine/core/styles.css';
 
 import { MantineColorsTuple, MantineProvider, createTheme } from '@mantine/core';
 import type { AppProps } from 'next/app';
+import { ModalsProvider } from '@mantine/modals';
 
 const primary: MantineColorsTuple = [
   '#eef4ff',
@@ -44,15 +45,17 @@ const theme = createTheme({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <MantineProvider theme={theme}>
-      <Component {...pageProps} />
-      <style jsx global>{`
-        html,
-        body,
-        #__next {
-          height: 100%;
-          background: #dce4f5;
-        }
-      `}</style>
+      <ModalsProvider>
+        <Component {...pageProps} />
+        <style jsx global>{`
+          html,
+          body,
+          #__next {
+            height: 100%;
+            background: #dce4f5;
+          }
+        `}</style>
+      </ModalsProvider>
     </MantineProvider>
   );
 }

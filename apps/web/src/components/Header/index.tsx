@@ -8,7 +8,7 @@ const links = [
   { link: '/about', label: 'Features' },
   { link: '/gallery', label: 'Gallery' },
   { link: '/donate', label: 'Donate' },
-  { link: '/community', label: 'Contact' },
+  { link: '/contact-us', label: 'Contact' },
 ];
 
 export default function Header() {

@@ -4,6 +4,7 @@ import {
   Group,
   Image,
   Modal,
+  ScrollArea,
   Stack,
   Title,
   Text,
@@ -15,24 +16,24 @@ import { IconInfoSquareFilled } from '@tabler/icons-react';
 const modalQuestions = [
   {
     id: 'patterns',
-    value: 'Can I describe the color patterns on the bird in detail?',
+    value: "Can I describe the bird's color patterns in detail?",
     description:
-      'Color patterns play an important part of identification for most birds. ' +
+      'Color patterns play an important part in the identification of most birds ' +
       'A lack of easily distinguishable landmarks could lead to worse prediction results.',
   },
   {
     id: 'glance',
     value: "Can I quickly determine the bird's location in an image?",
     description:
-      'Zoomed out images make it more difficult for the AI. Try to zoom in ' +
+      'Zoomed-out images make it more difficult for the AI. Try to zoom in ' +
       'when capturing photos whenever you can.',
   },
   {
     id: 'head',
     value: 'Is the head along with the beak easily visible?',
     description:
-      'Most birds have a unique head and beak shape, along with unique colorations. ' +
-      'Leaving out the head leaves out less clues for the AI to work with.',
+      'Many birds have unique heads, beak shapes, and colorations. ' +
+      'Leaving out the head leaves fewer clues for the AI to work with.',
   },
 ];
 
@@ -53,7 +54,13 @@ export default function TipsModal({ opened, onClose }: ModalBaseProps) {
   ));
 
   return (
-    <Modal.Root size="lg" opened={opened} onClose={onClose} centered>
+    <Modal.Root
+      size="lg"
+      opened={opened}
+      onClose={onClose}
+      scrollAreaComponent={ScrollArea.Autosize}
+      centered
+    >
       <Modal.Overlay />
       <Modal.Content>
         <Modal.Header p={rem(32)} pb={0}>
@@ -61,7 +68,7 @@ export default function TipsModal({ opened, onClose }: ModalBaseProps) {
         </Modal.Header>
         <Modal.Body pl={rem(32)} pr={rem(32)} pb={rem(32)} pt={0}>
           <Stack align="stretch" justify="center">
-            <Modal.Title fw={600} fz={rem(24)}>
+            <Modal.Title fw={600} fz={rem(26)} ff="Rubik">
               Getting the Best Results
             </Modal.Title>
             <Text>
@@ -73,6 +80,10 @@ export default function TipsModal({ opened, onClose }: ModalBaseProps) {
               image:
             </Text>
             <Accordion>{questions}</Accordion>
+            <Text>
+              If you answered yes to all of these questions, then you have a great image for
+              analysis!
+            </Text>
             <Title order={3} fw={500}>
               Example
             </Title>
