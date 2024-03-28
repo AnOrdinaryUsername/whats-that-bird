@@ -23,7 +23,6 @@ Species: Cook's Petrel, Images available: 37
 Species: Stejneger's Petrel, Images available: 0
 Species: Jouanin's Petrel, Images available: 2
 Species: Newell's Shearwater, Images available: 16
-Species: Newell's Shearwater, Images available: 14
 Species: American Goshawk, Images available: 42
 Species: Small-billed Elaenia, Images available: 14
 Species: Lanceolated Warbler, Images available: 25
