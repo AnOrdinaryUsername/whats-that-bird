@@ -18,7 +18,7 @@ const modalQuestions = [
     id: 'patterns',
     value: "Can I describe the bird's color patterns in detail?",
     description:
-      'Color patterns play an important part in the identification of most birds ' +
+      'Color patterns play an important part in the identification of most birds. ' +
       'A lack of easily distinguishable landmarks could lead to worse prediction results.',
   },
   {
@@ -30,7 +30,7 @@ const modalQuestions = [
   },
   {
     id: 'head',
-    value: 'Is the head along with the beak easily visible?',
+    value: "Is the bird's head and beak easily visible?",
     description:
       'Many birds have unique heads, beak shapes, and colorations. ' +
       'Leaving out the head leaves fewer clues for the AI to work with.',

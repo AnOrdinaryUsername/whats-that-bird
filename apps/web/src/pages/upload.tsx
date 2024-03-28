@@ -1,4 +1,17 @@
-import { Button, Group, Image, Modal, Stack, Title, Text, Container, rem } from '@mantine/core';
+import {
+  Button,
+  Divider,
+  Group,
+  Image,
+  Modal,
+  Stack,
+  Title,
+  Text,
+  Container,
+  rem,
+  Anchor,
+  Mark,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { DropzoneProps, FileWithPath } from '@mantine/dropzone';
 import { useEffect, useState } from 'react';
@@ -17,11 +30,27 @@ export default function UploadPage(props: Partial<DropzoneProps>) {
   if (results) {
     birdInfo = results.info.map(
       ({ name, confidence }: { name: string; confidence: number }, i: number) => (
-        <Stack key={i} justify="center" align="center">
-          <Title order={2} ta="center">
-            Species: {name}
-          </Title>
-          <Text>Confidence Score: {createReadablePercentage(confidence)}%</Text>
+        <Stack key={i} justify="flex-start" align="flex-start" maw={rem(500)}>
+          <Stack gap={rem(0)}>
+            <Text component="span" fz={rem(16)} fw={300}>
+              SPECIES
+            </Text>
+            <Title order={2} ta="left" fz={rem(36)}>
+              {name}
+            </Title>
+          </Stack>
+          <Text>
+            <Mark color="var(--mantine-color-primary-1)">
+              Our AI is {createReadablePercentage(confidence)}% confident about this result.
+            </Mark>
+          </Text>
+          <Text>
+            To learn more about this particular bird, visit the{' '}
+            <Anchor href={`https://www.allaboutbirds.org/guide/${name.replaceAll(' ', '_')}`}>
+              {name}
+            </Anchor>{' '}
+            page from the Cornell Lab of Ornithology.
+          </Text>
         </Stack>
       ),
     );
@@ -38,13 +67,13 @@ export default function UploadPage(props: Partial<DropzoneProps>) {
       cancelProps: { variant: 'light' },
       onConfirm: () => uploadPhoto(files),
     });
-  };
+  }
 
   function createReadablePercentage(num: number): string {
     const score = parseFloat(num.toString()).toFixed(4);
     const percent = Number(score) * 100;
     return parseFloat(percent.toString()).toFixed();
-  };
+  }
 
   function uploadPhoto(files: FileWithPath[]): void {
     const formData = new FormData();
@@ -64,7 +93,7 @@ export default function UploadPage(props: Partial<DropzoneProps>) {
         setResults(res);
         setIsLoading(false);
       });
-  };
+  }
 
   return (
     <Container size="lg" bg="inherit">
@@ -96,11 +125,14 @@ export default function UploadPage(props: Partial<DropzoneProps>) {
           </>
         ) : (
           <>
-            <Title order={1} fw={400} pb={rem(20)} ta="center">
+            <Title order={1} fw={400} pb={rem(20)} ta="left">
               Results
             </Title>
-            <Image src={results.url} maw={400} />
-            {birdInfo}
+            <Group align="center" justify="center">
+              <Image src={results.url} />
+              <Divider my="md" />
+              <Stack gap={rem(36)}>{birdInfo}</Stack>
+            </Group>
             <Button onClick={() => setResults(null)} variant="filled" mt={rem(20)}>
               Upload Another Image
             </Button>
