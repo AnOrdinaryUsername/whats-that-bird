@@ -23,7 +23,7 @@ const modalQuestions = [
   },
   {
     id: 'glance',
-    value: "Can I quickly determine the bird's location in an image?",
+    value: "Does the bird take up a large part of the frame?",
     description:
       'Zoomed-out images make it more difficult for the AI. Try to zoom in ' +
       'when capturing photos whenever you can.',
@@ -92,8 +92,8 @@ export default function TipsModal({ opened, onClose }: ModalBaseProps) {
                 <Text fw={500}>✔️ Good</Text>
                 <Image
                   radius="md"
-                  maw={300}
-                  src="https://www.longbeach.gov/globalassets/park/media-library/images/park-and-facilities/parks---centers---pier/el-dorado-nature-center/birds/pictures3/61_cvmain.jpg"
+                  maw={480}
+                  src="https://whats-that-bird.s3.amazonaws.com/a6f6a44b-390e-45dd-99f5-dde1dd891ff7.jpg"
                   alt="A clear image of a bird. The image is in great detail."
                 />
               </Stack>
@@ -101,7 +101,7 @@ export default function TipsModal({ opened, onClose }: ModalBaseProps) {
                 <Text fw={500}>❌ Bad</Text>
                 <Image
                   radius="md"
-                  maw={300}
+                  maw={480}
                   src="https://whats-that-bird.s3.amazonaws.com/bad-bird-image.jpg"
                   alt="A zoomed out image of a flock of birds. Barely any details can be seen."
                 />
