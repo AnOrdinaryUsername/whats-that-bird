@@ -29,7 +29,6 @@ export default function SignUpPage() {
   const [emailError, setEmailError] = useState<string | null>(null);
 
   const form = useForm({
-    mode: 'uncontrolled',
     initialValues: {
       email: '',
       password: '',

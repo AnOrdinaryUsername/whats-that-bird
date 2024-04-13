@@ -23,7 +23,6 @@ export default function LoginPage() {
   const supabase = createClient();
 
   const form = useForm({
-    mode: 'uncontrolled',
     initialValues: {
       email: '',
       password: '',
