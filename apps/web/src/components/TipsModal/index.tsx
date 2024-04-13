@@ -23,7 +23,7 @@ const modalQuestions = [
   },
   {
     id: 'glance',
-    value: "Does the bird take up a large part of the frame?",
+    value: 'Does the bird take up a large part of the frame?',
     description:
       'Zoomed-out images make it more difficult for the AI. Try to zoom in ' +
       'when capturing photos whenever you can.',

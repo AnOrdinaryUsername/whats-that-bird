@@ -7,11 +7,15 @@ import Link from 'next/link';
 const links = [
   { link: '/about', label: 'Features' },
   { link: '/gallery', label: 'Gallery' },
-  { link: '/donate', label: 'Donate' },
+  { link: '/resources', label: 'Resources' },
   { link: '/contact-us', label: 'Contact' },
 ];
 
-export default function Header() {
+interface Props {
+  hideButtons?: boolean;
+}
+
+export default function Header({ hideButtons }: Props) {
   const [opened, { toggle }] = useDisclosure(false);
   const [active, setActive] = useState<any>(null);
 
@@ -38,14 +42,18 @@ export default function Header() {
           <Group gap={5} visibleFrom="xs">
             {items}
           </Group>
-          <Group visibleFrom="sm">
-            <Button component={Link} variant="subtle" href="/log-in">
-              Log in
-            </Button>
-            <Button component={Link} variant="filled" href="/sign-up">
-              Sign up
-            </Button>
-          </Group>
+          {!hideButtons && (
+            <>
+              <Group visibleFrom="sm">
+                <Button component={Link} variant="subtle" href="/log-in">
+                  Log in
+                </Button>
+                <Button component={Link} variant="filled" href="/sign-up">
+                  Sign up
+                </Button>
+              </Group>
+            </>
+          )}
           <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" />
         </Group>
       </Container>

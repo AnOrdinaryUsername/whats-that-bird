@@ -3,7 +3,6 @@ import {
   Divider,
   Group,
   Image,
-  Modal,
   Stack,
   Title,
   Text,
@@ -96,7 +95,7 @@ export default function UploadPage(props: Partial<DropzoneProps>) {
   }
 
   return (
-    <Container size="lg" bg="inherit">
+    <Container size="lg" pt={rem(24)} pb={rem(24)} bg="inherit">
       <Header />
       <TipsModal opened={opened} onClose={close} />
       <Stack
