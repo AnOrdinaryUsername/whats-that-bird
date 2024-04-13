@@ -89,7 +89,7 @@ export default function LoginPage() {
             </Stack>
           </form>
           <Text size="gray" ta="center" mt={rem(16)}>
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Anchor underline="always" component={Link} href="/sign-up">
               Sign Up Now
             </Anchor>
