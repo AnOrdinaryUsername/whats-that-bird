@@ -10,7 +10,7 @@ import asyncio
 import filetype
 
 load_dotenv()
-images_per_species = 100
+IMAGES_PER_SPECIES = 100
 
 
 class MissingEnvironmentVariable(Exception):
@@ -60,7 +60,7 @@ def get_photos(image_tag: str) -> Generator[Any, Any, None]:
     photos = flickr.walk(
         text=f"{image_tag} -plane -aircraft -military -art -cat -dog",
         privacy_filter=PUBLIC_PHOTOS,
-        per_page=images_per_species,
+        per_page=IMAGES_PER_SPECIES,
         sort="relevance",
         license="1,2,3,4,5,6,7,8,9,10",
         content_types=PHOTOS_ONLY,
@@ -105,7 +105,7 @@ def get_total_photos(image_tag: str) -> int:
     search_params = {
         "text": f"{image_tag} -plane -aircraft -military -art -cat -dog",
         "privacy_filter": PUBLIC_PHOTOS,
-        "per_page": images_per_species,
+        "per_page": IMAGES_PER_SPECIES,
         "sort": "relevance",
         "license": "1,2,3,4,5,6,7,8,9,10",
         "content_types": PHOTOS_ONLY,
@@ -141,7 +141,7 @@ def download(url: str, bird_dir: str, bird: str, i: int) -> None:
 
 
 def check_broken_images(root_path):
-    broken_images = []
+    broken_dirs = []
 
     for _, dirs, _ in os.walk(root_path, topdown=False):
         for bird in dirs:
@@ -149,10 +149,10 @@ def check_broken_images(root_path):
 
             for file in os.listdir(bird_dir):
                 if not filetype.is_image(os.path.join(bird_dir, file)):
-                    broken_images.append(bird)
+                    broken_dirs.append(bird)
                     break
 
-    return broken_images
+    return broken_dirs
 
 
 def check_empty_dirs(root_path) -> List[str]:
@@ -174,13 +174,13 @@ def generate_dataset(dir_name: str, birds: List[str]) -> None:
     # If there isn't enough photos for data collection,
     # we don't create a class for them
     excluded_species = []
-    INSUFFICIENT_DATA = 40
 
     for bird in birds:
 
         total = get_total_photos(bird)
+        INSUFFICIENT_DATA = total < 40
 
-        if total < INSUFFICIENT_DATA:
+        if INSUFFICIENT_DATA:
             click.echo(
                 click.style(
                     f"\nInsufficient data for '{bird}'. Skipping downloads...",
@@ -204,7 +204,7 @@ def generate_dataset(dir_name: str, birds: List[str]) -> None:
         tasks = []
 
         for i, photo in enumerate(photos):
-            if i >= images_per_species:
+            if i >= IMAGES_PER_SPECIES:
                 break
 
             url = photo.get("url_o")
