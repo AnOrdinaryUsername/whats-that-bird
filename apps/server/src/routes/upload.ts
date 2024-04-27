@@ -125,9 +125,9 @@ type RunPodResponse = SuccessResponse | ErrorResponse;
 
 async function runPredictions(key: string): Promise<RunPodResponse> {
 
-    const { AWS_BUCKET, RUNPOD_ENDPOINT, RUNPOD_API_KEY } = process.env;
+    const { CLOUDFRONT_URL, RUNPOD_ENDPOINT, RUNPOD_API_KEY } = process.env;
 
-    const url = `https://${AWS_BUCKET}.s3.amazonaws.com/${key}`;
+    const url = `https://${CLOUDFRONT_URL}/${key}`;
 
     const data = {
         input: {
