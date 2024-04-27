@@ -82,17 +82,15 @@ def cli(
         return
 
     start = time.time()
-    # If output isn't provided, place the results in the input directory.
-    # Also uses normpath to handle relative paths like './examples'.
-    output = output or os.path.normpath(
-        os.path.join(os.getcwd(), os.path.dirname(input))
-    )
 
-    if not os.path.isdir(output):
-        try:
-            os.makedirs(output)
-        except OSError:
-            pass
+    input = os.path.realpath(os.path.expanduser(input))
+
+    if output:
+        if not os.path.isdir(output):
+            try:
+                os.makedirs(output)
+            except OSError:
+                pass
 
     click.echo(
         click.style(
@@ -102,6 +100,9 @@ def cli(
     )
 
     if os.path.isfile(input):
+        # If output isn't provided, place the results in the file's directory.
+        output = output or os.path.split(input)[0]
+
         # Separates file name and extension (e.g. 'annas.jpg' -> ['annas', 'jpg])
         file = os.path.basename(input).split(".")
         file_name = file[0]
@@ -142,14 +143,14 @@ def cli(
             result.save(filename=out_path)
 
     elif os.path.isdir(input):
-        # Get paths of all images in the input directory
-        # and exclude prediction files (like 'pelican_result.jpg')
+        # If output isn't provided, place the results in the input directory.
+        output = output or input
+
         images = [
-            os.path.join(input, file)
+            file
             for file in os.listdir(input)
-            if filetype.is_image(os.path.join(input, file)) and not "result" in file
+            if filetype.is_image(os.path.join(input, file))
         ]
-        images.sort()
 
         if not images:
             click.echo(
@@ -161,12 +162,14 @@ def cli(
             return
 
         model = YOLO(model)
-        results = model.predict(images, visualize=debug)
+        results = model.predict(input, stream=True)
 
-        for i in range(len(images)):
-            result = results[i]
+        for _, result in enumerate(results):
             # Separates file name and extension (e.g. annas.jpg -> annas)
-            file_name = os.path.basename(images[i]).split(".")[0]
+            file_name = os.path.basename(result.path).split(".")[0]
+
+            if "result" in file_name:
+                continue
 
             if debug:
                 data = json.loads(result.tojson())
