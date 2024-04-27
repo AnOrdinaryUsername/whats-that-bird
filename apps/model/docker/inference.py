@@ -30,11 +30,12 @@ def run_inference(job):
     )
 
     bucket_name = os.environ['AWS_BUCKET']
+    cloudfront_url = os.environ['CLOUDFRONT_URL']
 
     # Save file with annotations
     results[0].save(filename=file_name)
 
-    url = f'https://{bucket_name}.s3.amazonaws.com/{file_name}'
+    url = f'https://{cloudfront_url}/{file_name}'
 
     # Upload file to S3 bucket
     s3.upload_file(f'./{file_name}', Bucket=bucket_name, Key=file_name)

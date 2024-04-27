@@ -43,7 +43,7 @@ export default function Hero() {
           </Button>
         </Group>
         <Image
-          src="https://whats-that-bird.s3.amazonaws.com/low-poly-chicken.png"
+          src="https://d2jxjlx1x5gewb.cloudfront.net/low-poly-chicken.png"
           visibleFrom="md"
           className={classes.bird}
           onClick={playSound}

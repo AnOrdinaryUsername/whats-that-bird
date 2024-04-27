@@ -93,7 +93,7 @@ export default function TipsModal({ opened, onClose }: ModalBaseProps) {
                 <Image
                   radius="md"
                   maw={480}
-                  src="https://whats-that-bird.s3.amazonaws.com/a6f6a44b-390e-45dd-99f5-dde1dd891ff7.jpg"
+                  src="https://d2jxjlx1x5gewb.cloudfront.net/a6f6a44b-390e-45dd-99f5-dde1dd891ff7.jpg"
                   alt="A clear image of a bird. The image is in great detail."
                 />
               </Stack>
@@ -102,7 +102,7 @@ export default function TipsModal({ opened, onClose }: ModalBaseProps) {
                 <Image
                   radius="md"
                   maw={480}
-                  src="https://whats-that-bird.s3.amazonaws.com/bad-bird-image.jpg"
+                  src="https://d2jxjlx1x5gewb.cloudfront.net/bad-bird-image.jpg"
                   alt="A zoomed out image of a flock of birds. Barely any details can be seen."
                 />
               </Stack>
