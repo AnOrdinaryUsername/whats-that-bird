@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Anchor, Button, Container, Group, Burger } from '@mantine/core';
+import { Anchor, Burger, Button, Container, Group, Image, rem } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './Header.module.css';
 import Link from 'next/link';
@@ -17,19 +16,9 @@ interface Props {
 
 export default function Header({ hideButtons }: Props) {
   const [opened, { toggle }] = useDisclosure(false);
-  const [active, setActive] = useState<any>(null);
 
   const items = links.map((link) => (
-    <Anchor
-      key={link.label}
-      href={link.link}
-      className={classes.link}
-      data-active={active === link.link || undefined}
-      onClick={(event) => {
-        event.preventDefault();
-        setActive(link.link);
-      }}
-    >
+    <Anchor key={link.label} href={link.link} className={classes.link}>
       {link.label}
     </Anchor>
   ));
@@ -38,7 +27,9 @@ export default function Header({ hideButtons }: Props) {
     <header className={classes.header}>
       <Container size="lg" className={classes.inner}>
         <Group justify="space-between" h="100%" w="100%">
-          <Anchor href="/">What&apos;s That Bird?</Anchor>
+          <Anchor href="/">
+            <Image fit="contain" alt="What's That Bird?" maw={rem(200)} w="100%" src="/logo.svg" />
+          </Anchor>
           <Group gap={5} visibleFrom="xs">
             {items}
           </Group>

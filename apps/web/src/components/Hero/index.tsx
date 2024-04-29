@@ -44,6 +44,7 @@ export default function Hero() {
         </Group>
         <Image
           src="https://d2jxjlx1x5gewb.cloudfront.net/low-poly-chicken.png"
+          alt=""
           visibleFrom="md"
           className={classes.bird}
           onClick={playSound}
