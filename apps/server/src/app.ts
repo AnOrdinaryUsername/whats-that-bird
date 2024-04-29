@@ -29,7 +29,7 @@ const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void>
         },
     });
 
-    fastify.register(ratelimit, { global: false, max: 3000 });
+    await fastify.register(ratelimit, { global: false, max: 3000 });
 
     fastify.register(upload, { prefix: '/api' });
     // Do not touch the following lines
