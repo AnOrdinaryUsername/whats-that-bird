@@ -29,6 +29,9 @@ importers:
       '@fastify/multipart':
         specifier: ^8.1.0
         version: 8.1.0
+      '@fastify/rate-limit':
+        specifier: ^9.1.0
+        version: 9.1.0
       '@fastify/sensible':
         specifier: ^5.0.0
         version: 5.5.0
@@ -919,6 +922,14 @@ packages:
       fastify-plugin: 4.5.1
       secure-json-parse: 2.7.0
       stream-wormhole: 1.1.0
+    dev: false
+
+  /@fastify/rate-limit@9.1.0:
+    resolution: {integrity: sha512-h5dZWCkuZXN0PxwqaFQLxeln8/LNwQwH9popywmDCFdKfgpi4b/HoMH1lluy6P+30CG9yzzpSpwTCIPNB9T1JA==}
+    dependencies:
+      '@lukeed/ms': 2.0.2
+      fastify-plugin: 4.5.1
+      toad-cache: 3.7.0
     dev: false
 
   /@fastify/sensible@5.5.0:
