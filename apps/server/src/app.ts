@@ -19,8 +19,8 @@ export type AppOptions = {
 // Pass --options via CLI arguments in command to enable these options.
 const options: AppOptions = {
     logger: {
-        level: 'trace',
-    },
+        level: 'debug',
+    },  
 };
 
 const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void> => {
@@ -35,7 +35,10 @@ const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void>
         methods: ['GET', 'POST']
     });
 
-    await fastify.register(ratelimit, { global: false, max: 3000 });
+    await fastify.register(ratelimit, { 
+        global: false, 
+        keyGenerator: (req) => req.headers['x-forwarded-for'] as string
+    });
 
     fastify.register(upload, { prefix: '/api' });
     // Do not touch the following lines
