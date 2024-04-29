@@ -90,7 +90,7 @@ export default function UploadPage(props: Partial<DropzoneProps>) {
       .then((res) => {
         if (res.status === 429) {
           throw new Error(
-            "You've exceeded the max upload limit of 10 images. You can upload again in 24 hours.",
+            "You've exceeded the max upload limit of 5 images. You can upload again in 24 hours.",
           );
         } else if (!res.ok) {
           throw new Error(

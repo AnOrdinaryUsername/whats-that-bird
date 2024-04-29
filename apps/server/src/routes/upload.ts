@@ -17,7 +17,7 @@ const s3 = new S3Client({
 
 const options = {
     rateLimit: {
-        max: 1,
+        max: 5,
         timeWindow: '24 hours'
     }
 };
