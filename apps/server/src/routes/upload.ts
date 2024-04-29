@@ -25,14 +25,6 @@ const options = {
 
 const upload: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     fastify.post('/upload', { config: options }, async function (request, reply) {
-
-        const url = process.env.NODE_ENV === 'development'
-            ? 'http://localhost:8000'
-            : process.env.FRONTEND_URL;
-
-        reply.header("access-control-allow-origin", url);
-        reply.header("vary", "Origin");
-
         const image = await request.file();
 
         if (!image) {
@@ -79,7 +71,7 @@ const upload: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             );
 
             const results = {
-                info: [...simplified_details],
+                info: simplified_details,
                 url
             };
 

@@ -1,6 +1,7 @@
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
 import multipart from '@fastify/multipart';
 import ratelimit from '@fastify/rate-limit';
+import cors from '@fastify/cors'
 import { FILE_SIZE_LIMIT } from '@whats-that-bird/constants';
 import { FastifyPluginAsync } from 'fastify';
 import * as path from 'path';
@@ -27,6 +28,11 @@ const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void>
         limits: {
             fileSize: FILE_SIZE_LIMIT,
         },
+    });
+
+    await fastify.register(cors, { 
+        origin: process.env.NODE_ENV === 'development' ? true : process.env.FRONTEND_URL,
+        methods: ['GET', 'POST']
     });
 
     await fastify.register(ratelimit, { global: false, max: 3000 });
