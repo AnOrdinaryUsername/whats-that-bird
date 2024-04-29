@@ -19,14 +19,9 @@ import TipsModal from '@/components/TipsModal';
 import FileDropzone from '@/components/FileDropzone';
 import Header from '@/components/Header';
 import { GenericLayout } from '@/components/Layouts';
-import type { GetServerSidePropsContext } from 'next';
 
 
-interface Props {
-  ipAddress: string;
-}
-
-export default function UploadPage({ ipAddress }: Props) {
+export default function UploadPage() {
   const [results, setResults] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [opened, { open, close }] = useDisclosure(true);
@@ -92,9 +87,6 @@ export default function UploadPage({ ipAddress }: Props) {
     fetch(`${url}/api/upload`, {
       method: 'POST',
       body: formData,
-      headers: {
-        'x-forwarded-for': ipAddress
-      }
     })
       .then((res) => {
         if (res.status === 429) {
@@ -172,14 +164,4 @@ export default function UploadPage({ ipAddress }: Props) {
       </Stack>
     </GenericLayout>
   );
-}
-
-export async function getServerSideProps({ req }: GetServerSidePropsContext) {
-  const ipAddress = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-
-  return {
-    props: {
-      ipAddress
-    },
-  };
 }

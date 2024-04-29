@@ -25,9 +25,6 @@ const options = {
 
 const upload: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     fastify.post('/upload', { config: options }, async function (request, reply) {
-        fastify.log.debug(request.headers['x-forwarded-for']);
-        fastify.log.debug(request.ip);
-
         const image = await request.file();
 
         if (!image) {

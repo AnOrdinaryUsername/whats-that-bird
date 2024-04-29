@@ -1,7 +1,7 @@
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
 import multipart from '@fastify/multipart';
 import ratelimit from '@fastify/rate-limit';
-import cors from '@fastify/cors'
+import cors from '@fastify/cors';
 import { FILE_SIZE_LIMIT } from '@whats-that-bird/constants';
 import { FastifyPluginAsync } from 'fastify';
 import * as path from 'path';
@@ -20,7 +20,7 @@ export type AppOptions = {
 const options: AppOptions = {
     logger: {
         level: 'debug',
-    },  
+    },
 };
 
 const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void> => {
@@ -30,14 +30,17 @@ const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void>
         },
     });
 
-    await fastify.register(cors, { 
+    await fastify.register(cors, {
         origin: process.env.NODE_ENV === 'development' ? true : process.env.FRONTEND_URL,
-        methods: ['GET', 'POST']
+        methods: ['GET', 'POST'],
     });
 
-    await fastify.register(ratelimit, { 
-        global: false, 
-        keyGenerator: (req) => req.headers['x-forwarded-for'] as string
+    await fastify.register(ratelimit, {
+        global: false,
+        keyGenerator: function (req) {
+            const userIP = (req.headers['x-forwarded-for'] as string).split(/, /)[0];
+            return userIP || req.ip;
+        },
     });
 
     fastify.register(upload, { prefix: '/api' });
