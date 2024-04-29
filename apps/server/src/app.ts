@@ -1,5 +1,6 @@
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
 import multipart from '@fastify/multipart';
+import ratelimit from '@fastify/rate-limit';
 import { FILE_SIZE_LIMIT } from '@whats-that-bird/constants';
 import { FastifyPluginAsync } from 'fastify';
 import * as path from 'path';
@@ -27,6 +28,8 @@ const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void>
             fileSize: FILE_SIZE_LIMIT,
         },
     });
+
+    fastify.register(ratelimit, { global: false, max: 3000 });
 
     fastify.register(upload, { prefix: '/api' });
     // Do not touch the following lines
