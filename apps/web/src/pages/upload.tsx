@@ -6,18 +6,19 @@ import {
   Stack,
   Title,
   Text,
-  Container,
   rem,
   Anchor,
   Mark,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { DropzoneProps, FileWithPath } from '@mantine/dropzone';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { modals } from '@mantine/modals';
 import TipsModal from '@/components/TipsModal';
 import FileDropzone from '@/components/FileDropzone';
 import Header from '@/components/Header';
+import { GenericLayout } from '@/components/Layouts';
 
 export default function UploadPage(props: Partial<DropzoneProps>) {
   const [results, setResults] = useState<any>(null);
@@ -31,9 +32,9 @@ export default function UploadPage(props: Partial<DropzoneProps>) {
       ({ name, confidence }: { name: string; confidence: number }, i: number) => (
         <Stack key={i} justify="flex-start" align="flex-start" maw={rem(500)}>
           <Stack gap={rem(0)}>
-            <Text component="span" fz={rem(16)} fw={300}>
+            <Title component="span" ff="Rubik" fz={rem(16)} fw={300}>
               SPECIES
-            </Text>
+            </Title>
             <Title order={2} ta="left" fz={rem(36)}>
               {name}
             </Title>
@@ -61,7 +62,7 @@ export default function UploadPage(props: Partial<DropzoneProps>) {
     modals.openConfirmModal({
       centered: true,
       title: 'Image Preview',
-      children: <Image src={imageUrl} onLoad={() => URL.revokeObjectURL(imageUrl)} />,
+      children: <Image src={imageUrl} alt="" onLoad={() => URL.revokeObjectURL(imageUrl)} />,
       labels: { confirm: 'Upload Photo', cancel: 'Go Back' },
       cancelProps: { variant: 'light' },
       onConfirm: () => uploadPhoto(files),
@@ -86,16 +87,38 @@ export default function UploadPage(props: Partial<DropzoneProps>) {
       method: 'POST',
       body: formData,
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 429) {
+          throw new Error(
+            "You've exceeded the max upload limit of 10 images. You can upload again in 24 hours.",
+          );
+        } else if (!res.ok) {
+          throw new Error(
+            'There seems to be a problem with the server at the moment. Please try again later.',
+          );
+        }
+        return res.json();
+      })
       .then((res) => {
         console.log(res);
         setResults(res);
         setIsLoading(false);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        notifications.show({
+          withCloseButton: true,
+          autoClose: 30000,
+          title: 'Oh no!',
+          message: error.message,
+          color: 'red',
+          loading: false,
+        });
       });
   }
 
   return (
-    <Container size="lg" pt={rem(24)} pb={rem(24)} bg="inherit">
+    <GenericLayout size="lg" bg="#dce4f5">
       <Header />
       <TipsModal opened={opened} onClose={close} />
       <Stack
@@ -128,7 +151,7 @@ export default function UploadPage(props: Partial<DropzoneProps>) {
               Results
             </Title>
             <Group align="center" justify="center">
-              <Image src={results.url} />
+              <Image alt="" src={results.url} />
               <Divider my="md" />
               <Stack gap={rem(36)}>{birdInfo}</Stack>
             </Group>
@@ -138,6 +161,6 @@ export default function UploadPage(props: Partial<DropzoneProps>) {
           </>
         )}
       </Stack>
-    </Container>
+    </GenericLayout>
   );
 }

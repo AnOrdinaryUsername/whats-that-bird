@@ -1,10 +1,12 @@
 // Import styles of packages that you've installed.
 // All packages except `@mantine/hooks` require styles imports
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 
 import { MantineColorsTuple, MantineProvider, createTheme } from '@mantine/core';
 import type { AppProps } from 'next/app';
 import { ModalsProvider } from '@mantine/modals';
+import { Notifications } from '@mantine/notifications';
 
 const primary: MantineColorsTuple = [
   '#eef4ff',
@@ -45,6 +47,7 @@ const theme = createTheme({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <MantineProvider theme={theme}>
+      <Notifications />
       <ModalsProvider>
         <Component {...pageProps} />
         <style jsx global>{`
@@ -52,7 +55,6 @@ export default function App({ Component, pageProps }: AppProps) {
           body,
           #__next {
             height: 100%;
-            background: #dce4f5;
           }
         `}</style>
       </ModalsProvider>
