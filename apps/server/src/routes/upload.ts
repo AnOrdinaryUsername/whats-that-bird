@@ -17,14 +17,14 @@ const s3 = new S3Client({
 
 const options = {
     rateLimit: {
-        max: 10,
+        max: 1,
         timeWindow: '24 hours'
     }
 };
 
 
 const upload: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-    fastify.post('/upload', { config: { ...options } }, async function (request, reply) {
+    fastify.post('/upload', { config: options }, async function (request, reply) {
 
         const url = process.env.NODE_ENV === 'development'
             ? 'http://localhost:8000'
