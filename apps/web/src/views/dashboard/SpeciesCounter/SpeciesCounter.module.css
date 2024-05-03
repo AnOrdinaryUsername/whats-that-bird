@@ -1,0 +1,21 @@
+.background {
+    background-color: #4B5366;
+
+    & > * {
+        color: white;
+    }
+}
+
+.count {
+    line-height: 1;
+    font-size: rem(96px);
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: baseline;
+}
+
+.total {
+    color: #C8CAD3;
+    font-size: rem(28px);
+}

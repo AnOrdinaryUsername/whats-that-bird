@@ -17,6 +17,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import { createClient } from '@/utils/supabase/component';
+import { GenericLayout } from '@/components/Layouts';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -40,11 +41,11 @@ export default function LoginPage() {
       console.error(error);
       return;
     }
-    router.push('/dashboard');
+    router.push('/user/dashboard');
   }
 
   return (
-    <Container pt={rem(24)} pb={rem(24)} size="lg">
+    <GenericLayout size="lg" bg="#dce4f5">
       <Header hideButtons />
       <Center h="60%">
         <Stack
@@ -95,6 +96,6 @@ export default function LoginPage() {
           </Text>
         </Stack>
       </Center>
-    </Container>
+    </GenericLayout>
   );
 }

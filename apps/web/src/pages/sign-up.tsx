@@ -20,6 +20,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 import { createClient } from '@/utils/supabase/component';
+import { GenericLayout } from '@/components/Layouts';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -59,7 +60,7 @@ export default function SignUpPage() {
 
     if (data) {
       if (data.length > 0) {
-        setNameError('Username already exists');
+        setNameError('Whoops! That username is already in use.');
         return;
       }
     }
@@ -87,11 +88,11 @@ export default function SignUpPage() {
       return;
     }
 
-    router.push('/dashboard');
+    router.push('/user/dashboard');
   }
 
   return (
-    <Container pt={rem(24)} pb={rem(24)} size="lg">
+    <GenericLayout size="lg" bg="#dce4f5">
       <Header hideButtons />
       <Center>
         <Stack
@@ -166,6 +167,6 @@ export default function SignUpPage() {
           </Text>
         </Stack>
       </Center>
-    </Container>
+    </GenericLayout>
   );
 }
