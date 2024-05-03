@@ -33,11 +33,16 @@ const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void>
     await fastify.register(cors, {
         origin: process.env.NODE_ENV === 'development' ? true : process.env.FRONTEND_URL,
         methods: ['GET', 'POST'],
+        exposedHeaders: ['X-Ratelimit-Reset', 'X-Ratelimit-Remaining', 'X-Ratelimit-Limit'],
     });
 
     await fastify.register(ratelimit, {
         global: false,
         keyGenerator: function (req) {
+            if (process.env.NODE_ENV === 'development') {
+                return req.ip;
+            }
+
             const userIP = (req.headers['x-forwarded-for'] as string).split(/, /)[0];
             return userIP || req.ip;
         },
