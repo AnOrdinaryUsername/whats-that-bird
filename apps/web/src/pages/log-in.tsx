@@ -45,7 +45,7 @@ export default function LoginPage() {
   }
 
   return (
-    <GenericLayout size="lg" bg="#dce4f5">
+    <GenericLayout pageTitle="Log In" size="lg" bg="#dce4f5">
       <Header hideButtons />
       <Center h="60%">
         <Stack

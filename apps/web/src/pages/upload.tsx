@@ -219,7 +219,12 @@ export default function UploadPage() {
   }
 
   return (
-    <GenericLayout size="lg" bg="#dce4f5" onPaste={(event) => pasteImage(event)}>
+    <GenericLayout
+      pageTitle="Upload Your Bird"
+      size="lg"
+      bg="#dce4f5"
+      onPaste={(event) => pasteImage(event)}
+    >
       <Header />
       <TipsModal opened={opened} onClose={close} />
       <Stack

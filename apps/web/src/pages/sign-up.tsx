@@ -92,7 +92,7 @@ export default function SignUpPage() {
   }
 
   return (
-    <GenericLayout size="lg" bg="#dce4f5">
+    <GenericLayout pageTitle="Sign Up" size="lg" bg="#dce4f5">
       <Header hideButtons />
       <Center>
         <Stack

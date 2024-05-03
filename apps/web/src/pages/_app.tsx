@@ -7,6 +7,9 @@ import { MantineColorsTuple, MantineProvider, createTheme } from '@mantine/core'
 import type { AppProps } from 'next/app';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
+import Head from 'next/head';
+import { DefaultSeo } from 'next-seo';
+import { SEO } from '../../next-seo.config';
 
 const primary: MantineColorsTuple = [
   '#eef4ff',
@@ -46,18 +49,26 @@ const theme = createTheme({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <MantineProvider theme={theme}>
-      <Notifications />
-      <ModalsProvider>
-        <Component {...pageProps} />
-        <style jsx global>{`
-          html,
-          body,
-          #__next {
-            height: 100%;
-          }
-        `}</style>
-      </ModalsProvider>
-    </MantineProvider>
+    <>
+      <Head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="theme-color" content="#FFF" />
+      </Head>
+      <DefaultSeo {...SEO} />
+      <MantineProvider theme={theme}>
+        <Notifications />
+        <ModalsProvider>
+          <Component {...pageProps} />
+          <style jsx global>{`
+            html,
+            body,
+            #__next {
+              height: 100%;
+            }
+          `}</style>
+        </ModalsProvider>
+      </MantineProvider>
+    </>
   );
 }
