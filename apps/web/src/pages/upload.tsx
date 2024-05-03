@@ -12,11 +12,12 @@ import {
   Kbd,
   TextInput,
   SimpleGrid,
+  FileInput,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { FileWithPath } from '@mantine/dropzone';
-import { IconPhoto, IconUpload } from '@tabler/icons-react';
+import { IconCamera, IconPhoto, IconUpload } from '@tabler/icons-react';
 import { useState, useRef } from 'react';
 import { modals } from '@mantine/modals';
 import TipsModal from '@/components/TipsModal';
@@ -260,6 +261,7 @@ export default function UploadPage() {
                 <TextInput
                   ref={inputRef}
                   aria-label="Image URL"
+                  placeholder="https://website.com/bird_image.jpg"
                   value={imageURL}
                   onChange={(event) => setImageURL(event.currentTarget.value)}
                   styles={{
@@ -302,6 +304,30 @@ export default function UploadPage() {
                 Example Image
               </Button>
             </Stack>
+            <Divider
+              my="md"
+              label="Or take a photo"
+              labelPosition="center"
+              mb={0}
+              maw={rem(660)}
+              w="100%"
+            />
+            <FileInput
+              onChange={(file) => file !== null && showPreview([file])}
+              accept="image/*"
+              mt={rem(8)}
+              clearable
+              leftSection={<IconCamera style={{ width: rem(16), height: rem(16) }} />}
+              capture="environment"
+              styles={{
+                input: {
+                  border: '1.5px var(--mantine-color-gray-2) solid',
+                  background: 'var(--mantine-color-gray-0)',
+                },
+              }}
+              aria-label="Capture an image with your camera"
+              placeholder="Capture an image with your camera"
+            />
             <Divider
               my="md"
               label="Or paste from Clipboard"
