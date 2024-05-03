@@ -30,7 +30,7 @@ const modalQuestions = [
   },
   {
     id: 'head',
-    value: "Is the bird's head and beak easily visible?",
+    value: "Is the bird's head, eye, and beak easily visible?",
     description:
       'Many birds have unique heads, beak shapes, and colorations. ' +
       'Leaving out the head leaves fewer clues for the AI to work with.',
