@@ -1,0 +1,21 @@
+.cropper {
+    max-width: 600px;
+    min-width: 200px;
+    width: 100%;
+}
+
+.button-container {
+    flex-flow: column-reverse;
+
+    @media (min-width: $mantine-breakpoint-sm) {
+        flex-direction: row;
+    }
+}
+
+.button {
+    width: 100%;
+
+    @media (min-width: $mantine-breakpoint-sm) {
+        width: auto;
+    }
+}

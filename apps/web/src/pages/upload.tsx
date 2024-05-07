@@ -13,22 +13,42 @@ import {
   TextInput,
   SimpleGrid,
   FileInput,
+  List,
+  ThemeIcon,
+  Center,
+  ActionIcon,
+  Tooltip,
+  LoadingOverlay,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { FileWithPath } from '@mantine/dropzone';
-import { IconCamera, IconPhoto, IconUpload } from '@tabler/icons-react';
+import {
+  IconArrowNarrowRight,
+  IconCamera,
+  IconCrop,
+  IconFeather,
+  IconFileAnalytics,
+  IconPhoto,
+  IconUpload,
+  IconX,
+} from '@tabler/icons-react';
 import { useState, useRef } from 'react';
 import { modals } from '@mantine/modals';
 import TipsModal from '@/components/TipsModal';
 import FileDropzone from '@/components/FileDropzone';
 import Header from '@/components/Header';
 import { GenericLayout } from '@/components/Layouts';
+import ImageEditor from '@/components/ImageEditor';
 
 export default function UploadPage() {
   const [results, setResults] = useState<any>(null);
   const [imageURL, setImageURL] = useState<string>('');
+
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [imageBlob, setImageBlob] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [opened, { open, close }] = useDisclosure(true);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -36,41 +56,155 @@ export default function UploadPage() {
   let birdInfo;
 
   if (results) {
-    birdInfo = results.info.map(
-      ({ name, confidence }: { name: string; confidence: number }, i: number) => (
-        <Stack key={i} justify="flex-start" align="flex-start" maw={rem(500)}>
-          <Stack gap={rem(0)}>
-            <Title component="span" ff="Rubik" fz={rem(16)} fw={300}>
-              SPECIES
-            </Title>
-            <Title order={2} ta="left" fz={rem(36)}>
-              {name}
-            </Title>
-          </Stack>
+    if (results.info.length === 0) {
+      birdInfo = (
+        <Stack justify="flex-start" align="flex-start" maw={rem(500)}>
+          <Title order={2} ta="left" fz={rem(36)}>
+            No Species Found
+          </Title>
           <Text>
             <Mark color="var(--mantine-color-primary-1)">
-              Our AI is {createReadablePercentage(confidence)}% confident about this result.
+              Our AI couldn&apos;t detect any birds in the image.
             </Mark>
           </Text>
-          <Text>
-            To learn more about this particular bird, visit the{' '}
-            <Anchor href={`https://www.allaboutbirds.org/guide/${name.replaceAll(' ', '_')}`}>
-              {name}
-            </Anchor>{' '}
-            page from the Cornell Lab of Ornithology.
-          </Text>
+          <Text>This could be caused by any of the following:</Text>
+          <List listStyleType="disc" spacing={8}>
+            <List.Item
+              styles={{ itemWrapper: { alignItems: 'flex-start' } }}
+              icon={
+                <ThemeIcon size={24} radius="xl" variant="light" color="gray">
+                  <IconFeather style={{ width: rem(16), height: rem(16) }} />
+                </ThemeIcon>
+              }
+            >
+              <Text fw={600}>The bird is</Text>
+              <List
+                withPadding
+                listStyleType="disc"
+                spacing={4}
+                icon={
+                  <ThemeIcon size={24} variant="light" color="gray">
+                    <IconArrowNarrowRight style={{ width: rem(16), height: rem(16) }} />
+                  </ThemeIcon>
+                }
+              >
+                <List.Item mt={4}>not naturally seen in California</List.Item>
+                <List.Item>a domesticated species</List.Item>
+                <List.Item>not taking up a large part of the frame</List.Item>
+              </List>
+            </List.Item>
+            <List.Item
+              styles={{ itemWrapper: { alignItems: 'flex-start' } }}
+              icon={
+                <ThemeIcon size={24} radius="xl" variant="light" color="gray">
+                  <IconPhoto style={{ width: rem(16), height: rem(16) }} />
+                </ThemeIcon>
+              }
+            >
+              <Text fw={600}>Image is</Text>
+              <List
+                withPadding
+                listStyleType="disc"
+                spacing={4}
+                icon={
+                  <ThemeIcon size={24} variant="light" color="gray">
+                    <IconArrowNarrowRight style={{ width: rem(16), height: rem(16) }} />
+                  </ThemeIcon>
+                }
+              >
+                <List.Item mt={4}>of low resolution</List.Item>
+                <List.Item>overexposed or undexposed</List.Item>
+                <List.Item>lacking in detail or clarity</List.Item>
+              </List>
+            </List.Item>
+            <List.Item
+              icon={
+                <ThemeIcon size={24} radius="xl" variant="light" color="gray">
+                  <IconFileAnalytics style={{ width: rem(16), height: rem(16) }} />
+                </ThemeIcon>
+              }
+            >
+              <Text fw={600}>Data quality issue on our end</Text>
+            </List.Item>
+            <List.Item
+              icon={
+                <ThemeIcon size={24} radius="xl" variant="light" color="gray">
+                  <IconX style={{ width: rem(16), height: rem(16) }} />
+                </ThemeIcon>
+              }
+            >
+              <Text fw={600}>There are no birds in the image</Text>
+            </List.Item>
+          </List>
         </Stack>
-      ),
-    );
+      );
+    } else {
+      birdInfo = results.info.map(
+        ({ name, confidence }: { name: string; confidence: number }, i: number) => (
+          <Stack key={i} justify="flex-start" align="flex-start" maw={rem(500)}>
+            <Stack gap={rem(0)}>
+              <Title component="span" ff="Rubik" fz={rem(16)} fw={300}>
+                SPECIES
+              </Title>
+              <Title order={2} ta="left" fz={rem(36)}>
+                {name}
+              </Title>
+            </Stack>
+            <Text>
+              <Mark color="var(--mantine-color-primary-1)">
+                Our AI is {createReadablePercentage(confidence)}% confident about this result.
+              </Mark>
+            </Text>
+            <Text>
+              To learn more about this particular bird, visit the{' '}
+              <Anchor href={`https://www.allaboutbirds.org/guide/${name.replaceAll(' ', '_')}`}>
+                {name}
+              </Anchor>{' '}
+              page from the Cornell Lab of Ornithology.
+            </Text>
+          </Stack>
+        ),
+      );
+    }
   }
 
-  function showPreview(files: FileWithPath[]): void {
+  function showPreview(files: FileWithPath[], hideEditButton = false): void {
     const imageUrl = URL.createObjectURL(files[0]);
+    setImageBlob(imageUrl);
 
     modals.openConfirmModal({
       centered: true,
       title: 'Image Preview',
-      children: <Image src={imageUrl} alt="" onLoad={() => URL.revokeObjectURL(imageUrl)} />,
+      children: (
+        <Center pos="relative">
+          <Image src={imageUrl} alt="" />
+          {!hideEditButton && (
+            <Tooltip
+              label="Edit Image"
+              color="dark"
+              position="right-end"
+              offset={{ mainAxis: 5, crossAxis: -3 }}
+            >
+              <ActionIcon
+                color="gray"
+                variant="filled"
+                radius="xl"
+                aria-label="Settings"
+                pos="absolute"
+                size={36}
+                bottom={0}
+                left={0}
+                ml={rem(12)}
+                mb={rem(12)}
+                style={{ zIndex: 1 }}
+                onClick={changeToEditor}
+              >
+                <IconCrop style={{ width: 'rem(24)', height: 'rem(24)' }} stroke={1.5} />
+              </ActionIcon>
+            </Tooltip>
+          )}
+        </Center>
+      ),
       labels: { confirm: 'Upload Photo', cancel: 'Go Back' },
       cancelProps: { variant: 'light' },
       onConfirm: () => uploadPhoto(files),
@@ -134,7 +268,14 @@ export default function UploadPage() {
       })
       .then((res) => {
         console.log(res);
+
+        if (imageBlob) {
+          URL.revokeObjectURL(imageBlob);
+          setImageBlob(null);
+        }
+
         setResults(res);
+        setIsEditing(false);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -172,8 +313,8 @@ export default function UploadPage() {
       })
       .then((blob) => {
         const filename = new URL(url).pathname.split('/').pop()!;
-        const imageBlob = new File([blob], filename, { type: blob.type });
-        showPreview([imageBlob]);
+        const imgBlob = new File([blob], filename, { type: blob.type });
+        showPreview([imgBlob]);
       })
       .catch((error) => {
         notifications.show({
@@ -219,6 +360,11 @@ export default function UploadPage() {
     }
   }
 
+  function changeToEditor() {
+    modals.closeAll();
+    setIsEditing(true);
+  }
+
   return (
     <GenericLayout
       pageTitle="Upload Your Bird"
@@ -242,7 +388,7 @@ export default function UploadPage() {
           border: '2px solid light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-4))',
         }}
       >
-        {!results ? (
+        {!results && !isEditing && (
           <>
             <Title order={1} fw={400} pb={rem(20)} ta="center">
               Upload a bird photo for identification
@@ -350,7 +496,22 @@ export default function UploadPage() {
               How to Get the Best Results
             </Button>
           </>
-        ) : (
+        )}
+        {!results && isEditing && (
+          <Stack maw={rem(600)} w="100%">
+            <Stack gap={12}>
+              <Title order={1} fw={500} ta="left">
+                Edit Image
+              </Title>
+              <Text pb={rem(20)}>
+                Crop the image to ensure the bird takes up a large part of the frame.
+              </Text>
+            </Stack>
+            <LoadingOverlay visible={isLoading} />
+            <ImageEditor editState={setIsEditing} src={imageBlob!} onUpload={showPreview} />
+          </Stack>
+        )}
+        {results && (
           <>
             <Title order={1} fw={400} pb={rem(20)} ta="left">
               Results

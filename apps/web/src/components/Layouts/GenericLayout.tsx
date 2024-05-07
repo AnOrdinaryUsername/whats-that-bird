@@ -8,7 +8,7 @@ interface Props extends ContainerProps {
   children: ReactNode;
 }
 
-export default function GenericLayout({ pageTitle, pageDescription, children, ...props}: Props) {
+export default function GenericLayout({ pageTitle, pageDescription, children, ...props }: Props) {
   return (
     <>
       <NextSeo title={pageTitle} description={pageDescription} />

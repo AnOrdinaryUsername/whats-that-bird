@@ -29,6 +29,7 @@
     "next-seo": "^6.5.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-mobile-cropper": "^0.10.0",
     "use-sound": "^4.0.1"
   },
   "devDependencies": {
