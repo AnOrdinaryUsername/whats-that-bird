@@ -27,10 +27,12 @@
     "@fastify/multipart": "^8.1.0",
     "@fastify/rate-limit": "^9.1.0",
     "@fastify/sensible": "^5.0.0",
+    "@types/mime-types": "^2.1.4",
     "dotenv": "^16.4.4",
     "fastify": "^4.0.0",
     "fastify-cli": "^6.1.0",
     "fastify-plugin": "^4.0.0",
+    "mime-types": "^2.1.35",
     "secure-json-parse": "^2.7.0"
   },
   "devDependencies": {

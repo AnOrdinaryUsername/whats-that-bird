@@ -2,6 +2,7 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import dotenv from 'dotenv';
 import { FastifyPluginAsync } from "fastify";
 import { parse } from 'secure-json-parse';
+import * as mime from 'mime-types';
 
 
 dotenv.config();
@@ -35,7 +36,7 @@ const upload: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             return;
         }
 
-        const [_, extension] = image.filename.split('.')
+        const extension = mime.extension(image.mimetype);
         const filename = `${crypto.randomUUID()}.${extension}`;
 
         const putObjectCommand = new PutObjectCommand({
