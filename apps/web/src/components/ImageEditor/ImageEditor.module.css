@@ -6,9 +6,11 @@
 
 .button-container {
     flex-flow: column-reverse;
+    width: 100%;
 
     @media (min-width: $mantine-breakpoint-sm) {
         flex-direction: row;
+        width: auto;
     }
 }
 
