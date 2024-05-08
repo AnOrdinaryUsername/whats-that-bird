@@ -168,9 +168,20 @@ export default function UploadPage() {
     }
   }
 
-  function showPreview(files: FileWithPath[], hideEditButton = false): void {
+  function showPreview(files: FileWithPath[], hideEditButton: boolean | object = false): void {
     const imageUrl = URL.createObjectURL(files[0]);
     setImageBlob(imageUrl);
+
+    /* 
+      On mobile file upload in dropzone, hideEditButton returns a SyntheticBaseEvent
+      which causes it to evaluate as true, thus hiding the edit button.
+
+      So check if it's an object and set it to false so the button isn't hidden
+      on mobile.
+    */
+    if (hideEditButton instanceof Object) {
+      hideEditButton = false;
+    }
 
     modals.openConfirmModal({
       centered: true,
