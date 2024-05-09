@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 const links = [
   { link: '/about', label: 'Features' },
-  { link: '/gallery', label: 'Gallery' },
+  { link: '/upload', label: 'Identify Bird' },
   { link: '/resources', label: 'Resources' },
   { link: '/contact-us', label: 'Contact' },
 ];

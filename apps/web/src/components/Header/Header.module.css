@@ -1,7 +1,7 @@
 .header {
   margin-bottom: rem(60px);
   background-color: var(--mantine-color-body);
-  background: #DCE4F5;
+  background: inherit;
 }
 
 .inner {
