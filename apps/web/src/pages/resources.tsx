@@ -58,32 +58,32 @@ const places = [
 ];
 
 export default function ResourcesPage() {
-  const websites = sites.map(({ link, label }) => (
-    <List.Item>
+  const websites = sites.map(({ link, label }, i) => (
+    <List.Item key={i}>
       <Anchor href={link} target="_blank">
         {label}
       </Anchor>
     </List.Item>
   ));
 
-  const birdApps = apps.map(({ link, label }) => (
-    <List.Item>
+  const birdApps = apps.map(({ link, label }, i) => (
+    <List.Item key={i}>
       <Anchor href={link} target="_blank">
         {label}
       </Anchor>
     </List.Item>
   ));
 
-  const recommendedReadings = books.map(({ link, label }) => (
-    <List.Item>
+  const recommendedReadings = books.map(({ link, label }, i) => (
+    <List.Item key={i}>
       <Anchor href={link} target="_blank">
         {label}
       </Anchor>
     </List.Item>
   ));
 
-  const birdingSpots = places.map(({ link, label, notes }) => (
-    <List.Item>
+  const birdingSpots = places.map(({ link, label, notes }, i) => (
+    <List.Item key={i}>
       <Anchor href={link} target="_blank">
         {label}
       </Anchor>{' '}

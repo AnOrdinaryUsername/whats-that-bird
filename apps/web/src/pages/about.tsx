@@ -10,10 +10,10 @@ export default function AboutPage() {
         <Stack component="section" align="center" maw={rem(800)}>
           <Stack align="center" mb={rem(48)}>
             <Title order={1} fw={500} fz={rem(48)} ta="center">
-              We're Helping Others Get Into the World of Birding
+              We&apos;re Helping Others Get Into the World of Birding
             </Title>
             <Text fz={rem(14)} ta="center">
-              Learning and identifying the many birds around us can be tough, but it doesn't have to
+              Learning and identifying the many birds around us can be tough, but it doesn&apos;t have to
               be so difficult.
             </Text>
           </Stack>
