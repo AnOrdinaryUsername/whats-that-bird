@@ -41,7 +41,7 @@ const places = [
     link: 'https://maps.app.goo.gl/4bxGmgP5UvtdRFMS9',
     label: 'IRWD San Joaquin Marsh & Wildlife Sanctuary (Irvine, CA)',
     notes:
-      'Easy walk as the trail is very flat. Also an extremely popular spot among birders and even has a gift shop for supporting the local Audobon Society.',
+      'Easy walk as the trail is very flat. Also an extremely popular spot among birders and even has a bird-related gift shop for supporting the local Audubon Chapter.',
   },
   {
     link: 'https://maps.app.goo.gl/TqbVnppvrA2ahSHW6',
@@ -94,7 +94,20 @@ export default function ResourcesPage() {
   return (
     <GenericLayout size="lg" bg="#EBFCFF">
       <Header />
-      <Stack w="100%" gap="xl" mb={rem(96)} pt={rem(40)}>
+      <Stack
+        align="center"
+        justify="center"
+        h="100%"
+        w="100%"
+        bg="var(--mantine-color-white)"
+        p={rem(75)}
+        pl={rem(25)}
+        pr={rem(25)}
+        style={{
+          borderRadius: rem(16),
+          border: '2px solid light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-4))',
+        }}
+      >
         <Stack component="section" maw={rem(800)}>
           <Stack mb={rem(32)}>
             <Title order={1} fw={500} fz={rem(48)}>
@@ -105,7 +118,7 @@ export default function ResourcesPage() {
             </Text>
           </Stack>
           <Stack gap="lg">
-            <Stack gap='xs'>
+            <Stack gap="xs">
               <Title order={2} fw={400} fz={rem(24)}>
                 Related Websites
               </Title>
@@ -122,10 +135,10 @@ export default function ResourcesPage() {
                 {websites}
               </List>
             </Stack>
-            <Stack gap='xs'>
-            <Title order={2} fw={400} fz={rem(24)}>
-              Mobile Apps
-            </Title>
+            <Stack gap="xs">
+              <Title order={2} fw={400} fz={rem(24)}>
+                Mobile Apps
+              </Title>
               <List
                 withPadding
                 listStyleType="disc"
@@ -139,7 +152,7 @@ export default function ResourcesPage() {
                 {birdApps}
               </List>
             </Stack>
-            <Stack gap='xs'>
+            <Stack gap="xs">
               <Title order={2} fw={400} fz={rem(24)}>
                 Recommended Readings
               </Title>
@@ -157,7 +170,7 @@ export default function ResourcesPage() {
                 {recommendedReadings}
               </List>
             </Stack>
-            <Stack gap='xs'>
+            <Stack gap="xs">
               <Title order={2} fw={400} fz={rem(24)}>
                 Places to Visit in California for Bird Viewing
               </Title>

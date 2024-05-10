@@ -18,12 +18,11 @@ import {
   IconStar,
   IconMessage,
   IconSettings,
-  IconPlayerPause,
-  IconTrash,
-  IconSwitchHorizontal,
   IconChevronDown,
 } from '@tabler/icons-react';
 import classes from './SimpleHeader.module.css';
+import { useRouter } from 'next/router';
+import { createClient } from '@/utils/supabase/component';
 
 const links = [
   { link: '/user/dashboard', label: 'Dashboard' },
@@ -41,6 +40,24 @@ export default function SimpleHeader({ name, image }: Props) {
   const theme = useMantineTheme();
   const [opened, { toggle }] = useDisclosure(false);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
+
+  async function signOut() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error(error);
+      }
+    }
+
+    router.push('/');
+  }
 
   const items = links.map((link) => (
     <a key={link.label} href={link.link} className={classes.link}>
@@ -118,11 +135,13 @@ export default function SimpleHeader({ name, image }: Props) {
               leftSection={
                 <IconSettings style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
               }
+              onClick={() => router.push('/user/settings')}
             >
               Account settings
             </Menu.Item>
             <Menu.Item
               leftSection={<IconLogout style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+              onClick={signOut}
             >
               Logout
             </Menu.Item>

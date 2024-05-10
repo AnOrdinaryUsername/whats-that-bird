@@ -155,13 +155,25 @@ export default function UploadPage() {
                 Our AI is {createReadablePercentage(confidence)}% confident about this result.
               </Mark>
             </Text>
-            <Text>
-              To learn more about this particular bird, visit the{' '}
-              <Anchor href={`https://www.allaboutbirds.org/guide/${name.replaceAll(' ', '_')}`}>
-                {name}
-              </Anchor>{' '}
-              page from the Cornell Lab of Ornithology.
-            </Text>
+            <Stack gap="xs">
+              <Text>To learn more about this particular bird, visit the following:</Text>
+              <List>
+                <List.Item>
+                  <Anchor href={`https://www.allaboutbirds.org/guide/${name.replaceAll(' ', '_')}`}>
+                    {name}
+                  </Anchor>{' '}
+                  from the Cornell Lab of Ornithology
+                </List.Item>
+                <List.Item>
+                  <Anchor
+                    href={`https://www.audubon.org/field-guide/bird/${name.replaceAll(' ', '-')}`}
+                  >
+                    {name}
+                  </Anchor>{' '}
+                  from the National Audubon Society
+                </List.Item>
+              </List>
+            </Stack>
           </Stack>
         ),
       );

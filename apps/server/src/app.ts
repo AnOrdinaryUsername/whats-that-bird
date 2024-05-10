@@ -7,6 +7,7 @@ import { FastifyPluginAsync } from 'fastify';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import upload from './routes/upload.js';
+import species from './routes/species.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,6 +50,7 @@ const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void>
     });
 
     fastify.register(upload, { prefix: '/api' });
+    fastify.register(species, { prefix: '/api' });
     // Do not touch the following lines
 
     // This loads all plugins defined in plugins

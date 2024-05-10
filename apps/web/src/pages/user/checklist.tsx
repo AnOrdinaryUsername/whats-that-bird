@@ -1,56 +1,128 @@
-import { Button, Container, Grid, rem, Stack } from '@mantine/core';
-import SimpleHeader from '@/components/SimpleHeader';
+import {
+  Anchor,
+  Table,
+  Grid,
+  rem,
+  Title,
+  Text,
+  Button,
+  Tooltip,
+  ActionIcon,
+  Stack,
+} from '@mantine/core';
 import type { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import { createClient } from '@/utils/supabase/component';
 import { createClient as createServerClient } from '@/utils/supabase/server-props';
-import { SpeciesProgress } from '@/views/checklist';
-import { WelcomeBox } from '@/views/dashboard';
+import { LifeList, SpeciesProgress } from '@/views/checklist';
+import Link from 'next/link';
+import { AuthLayout } from '@/components/Layouts';
+import { getAllBirdSecies, getTotalBirdSpecies } from '@/utils/supabase/birds';
+import { IconPencilPlus } from '@tabler/icons-react';
+import { useDisclosure } from '@mantine/hooks';
+import SightingModal from '@/components/SightingModal';
+import { useState } from 'react';
 
-interface Props {
-  avatar_url: string;
-  username: string;
+interface Sighting {
+  date: string;
+  name: string;
+  location: string;
+  sighting_id: string;
 }
 
-export default function DasboardPage({ avatar_url, username }: Props) {
-  const router = useRouter();
-  const supabase = createClient();
+interface Props {
+  username: string;
+  birds: Array<Sighting>;
+  totalBirds: number;
+  species: Array<string>;
+}
 
-  async function signOut() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+export default function ChecklistPage({ username, birds, totalBirds, species }: Props) {
+  const [birdsList, setBirdsList] = useState<Sighting[]>(birds);
+  const [opened, { open, close }] = useDisclosure(false);
 
-    if (user) {
-      const { error } = await supabase.auth.signOut();
+  const rows = birdsList.map(({ date, name, location, sighting_id }: Sighting) => (
+    <Table.Tr key={sighting_id}>
+      <Table.Td>{name}</Table.Td>
+      <Table.Td>{new Date(date).toDateString()}</Table.Td>
+      <Table.Td>
+        <Anchor component={Link} href={`/sighting/${sighting_id}`}>
+          {location}
+        </Anchor>
+      </Table.Td>
+    </Table.Tr>
+  ));
 
-      if (error) {
-        console.error(error);
-      }
-    }
-
-    router.push('/');
+  function createReadablePercentage(num: number): string {
+    const score = parseFloat(num.toString()).toFixed(4);
+    const percent = Number(score) * 100;
+    return parseFloat(percent.toString()).toFixed();
   }
 
   return (
-    <>
-      <SimpleHeader name={username} image={null} />
-      <Container h="100%" size="xl">
-        <Stack h="100%" w="100%">
-          <Grid w="100%" justify="center" align="stretch">
-            <Grid.Col span={8} mah={rem(300)}>
-              <WelcomeBox username={username} />
-            </Grid.Col>
-            <Grid.Col span={4} mah={rem(300)}>
-              <SpeciesProgress percentage={69} />
-            </Grid.Col>
-          </Grid>
-          <Button onClick={signOut} variant="filled" mt={rem(20)}>
-            Sign Out
+    <AuthLayout username={username} avatar={null} pageTitle="My Life List" pos="relative">
+      <Grid w="100%" justify="stretch" align="stretch">
+        <Grid.Col span={8} mah={rem(300)}>
+          <LifeList username={username} count={birds.length} total={totalBirds} />
+        </Grid.Col>
+        <Grid.Col span={4} mah={rem(300)}>
+          <SpeciesProgress
+            percentage={Number(createReadablePercentage(birds.length / totalBirds))}
+          />
+        </Grid.Col>
+      </Grid>
+      <Table mt={rem(36)} striped highlightOnHover>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Species Name</Table.Th>
+            <Table.Th>Date</Table.Th>
+            <Table.Th>Location</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        {birds.length !== 0 && <Table.Tbody>{rows}</Table.Tbody>}
+      </Table>
+      {birds.length === 0 && (
+        <Stack align="center" justify="center" mih={rem(300)}>
+          <Title order={2} fw={400} fz={rem(36)} mt={rem(40)}>
+            Oh no!
+          </Title>
+          <Stack gap="xs" align="center">
+            <Text>You haven't recorded any sightings yet!</Text>
+            <Text>Click the button below (or to the bottom right) to add a bird.</Text>
+          </Stack>
+          <Button
+            onClick={open}
+            leftSection={<IconPencilPlus style={{ width: rem(16), height: rem(16) }} />}
+          >
+            Create a Sighting
           </Button>
         </Stack>
-      </Container>
-    </>
+      )}
+      <SightingModal opened={opened} onClose={close} speciesList={species} onUpdate={setBirdsList} />
+      <Tooltip
+        label="Add to List"
+        color="dark"
+        position="left-end"
+        offset={{ mainAxis: 5, crossAxis: -15 }}
+      >
+        <ActionIcon
+          color="gray"
+          variant="filled"
+          radius="xl"
+          aria-label="Settings"
+          pos="fixed"
+          size={60}
+          bottom={0}
+          right={0}
+          mr={rem(24)}
+          mb={rem(24)}
+          style={{ zIndex: 1 }}
+          onClick={open}
+        >
+          <IconPencilPlus style={{ width: '28px', height: '28px' }} stroke={1.5} />
+        </ActionIcon>
+      </Tooltip>
+    </AuthLayout>
   );
 }
 
@@ -68,11 +140,31 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const user = await supabase.from('user').select().eq('user_id', data.user.id);
+  const sightings = await supabase
+    .from('user')
+    .select('*, sighting(date, name, location, sighting_id)')
+    .eq('user_id', data.user.id);
+
+  if (sightings.error) {
+    return {
+      redirect: {
+        destination: '/error',
+        permanent: false,
+      },
+    };
+  }
+
+  //console.log(sightings.data[0].sighting);
+
+  const birdCount = await getTotalBirdSpecies();
+  const species = await getAllBirdSecies();
 
   return {
     props: {
-      ...user.data![0],
+      username: data.user.user_metadata.username,
+      birds: sightings.data[0].sighting,
+      totalBirds: birdCount.total,
+      species: species.birds,
     },
   };
 }
