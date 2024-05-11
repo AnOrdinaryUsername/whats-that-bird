@@ -107,7 +107,7 @@ export default function SightingsPage({ username, avatar_url, user_id }: Props) 
     <AuthLayout username={username} avatar={avatarImage} pageTitle="Settings">
       <Stack h="100%" w="100%" gap="xs">
         <Title order={1} fw={500}>
-          Sightings
+          Settings
         </Title>
         <Divider w="100%" my="md" />
         <form onSubmit={form.onSubmit(updateSettings)}>
