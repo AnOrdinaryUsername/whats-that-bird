@@ -15,7 +15,6 @@ interface Props {
 }
 
 export default function DasboardPage({ avatar_url, username, speciesCount, totalBirds }: Props) {
-
   return (
     <AuthLayout username={username} avatar={avatar_url} pageTitle="Dashboard">
       <Stack h="100%" w="100%">

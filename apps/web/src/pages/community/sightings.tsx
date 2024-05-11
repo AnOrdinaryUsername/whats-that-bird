@@ -99,7 +99,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     .select()
     .order('created_at', { ascending: false });
 
-
   if (sightings.error) {
     return {
       redirect: {

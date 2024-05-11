@@ -158,7 +158,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-
   const birdCount = await getTotalBirdSpecies();
   const species = await getAllBirdSecies();
 

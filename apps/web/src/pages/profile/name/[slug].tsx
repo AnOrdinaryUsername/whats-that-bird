@@ -73,7 +73,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const user = await supabase.from('user').select('avatar_url').eq('user_id', data.user.id);
   const profile = await supabase.from('user').select().ilike('username', slug);
 
-
   if (
     user.error ||
     !user.data ||

@@ -1,4 +1,16 @@
-import { Anchor, Burger, Button, Container, Group, Image, rem } from '@mantine/core';
+import {
+  Anchor,
+  Burger,
+  Button,
+  Container,
+  Divider,
+  Drawer,
+  Group,
+  Image,
+  ScrollArea,
+  Stack,
+  rem,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './Header.module.css';
 import Link from 'next/link';
@@ -15,7 +27,7 @@ interface Props {
 }
 
 export default function Header({ hideButtons }: Props) {
-  const [opened, { toggle }] = useDisclosure(false);
+  const [opened, { toggle, close }] = useDisclosure(false);
 
   const items = links.map((link) => (
     <Anchor key={link.label} href={link.link} className={classes.link}>
@@ -24,30 +36,80 @@ export default function Header({ hideButtons }: Props) {
   ));
 
   return (
-    <header className={classes.header}>
-      <Container size="lg" className={classes.inner}>
-        <Group justify="space-between" h="100%" w="100%">
-          <Anchor href="/">
+    <>
+      <header className={classes.header}>
+        <Container size="lg" className={classes.inner}>
+          <Group justify="space-between" h="100%" w="100%">
+            <Anchor href="/">
+              <Image
+                fit="contain"
+                alt="What's That Bird?"
+                maw={rem(200)}
+                w="100%"
+                src="/logo.svg"
+              />
+            </Anchor>
+            <Group gap={5} visibleFrom="md">
+              {items}
+            </Group>
+            {!hideButtons && (
+              <>
+                <Group visibleFrom="md">
+                  <Button component={Link} variant="subtle" href="/log-in">
+                    Log in
+                  </Button>
+                  <Button component={Link} variant="filled" href="/sign-up">
+                    Sign up
+                  </Button>
+                </Group>
+              </>
+            )}
+            <Burger opened={opened} onClick={toggle} hiddenFrom="md" size="sm" />
+          </Group>
+        </Container>
+      </header>
+
+      <Drawer
+        opened={opened}
+        onClose={close}
+        size="100%"
+        padding="md"
+        title={
+          <Anchor component={Link} href="/">
             <Image fit="contain" alt="What's That Bird?" maw={rem(200)} w="100%" src="/logo.svg" />
           </Anchor>
-          <Group gap={5} visibleFrom="xs">
-            {items}
-          </Group>
-          {!hideButtons && (
-            <>
-              <Group visibleFrom="sm">
-                <Button component={Link} variant="subtle" href="/log-in">
-                  Log in
-                </Button>
-                <Button component={Link} variant="filled" href="/sign-up">
-                  Sign up
-                </Button>
-              </Group>
-            </>
-          )}
-          <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" />
-        </Group>
-      </Container>
-    </header>
+        }
+        hiddenFrom="sm"
+        zIndex={100}
+      >
+        <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
+          <Divider my="sm" />
+
+          <Anchor href="/about" component={Link} className={classes.link}>
+            About
+          </Anchor>
+          <Anchor href="/upload" component={Link} className={classes.link}>
+            Identify Bird
+          </Anchor>
+          <Anchor href="/resources" component={Link} className={classes.link}>
+            Resources
+          </Anchor>
+          <Anchor href="/contact-us" component={Link} className={classes.link}>
+            Contact Us
+          </Anchor>
+
+          <Divider my="sm" />
+
+          <Stack align="stretch" justify="center" pb="xl" px="md">
+            <Button component={Link} variant="filled" href="/sign-up">
+              Sign up
+            </Button>
+            <Button component={Link} variant="subtle" href="/log-in">
+              Log in
+            </Button>
+          </Stack>
+        </ScrollArea>
+      </Drawer>
+    </>
   );
 }

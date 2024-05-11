@@ -71,7 +71,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const user = await supabase.from('user').select('avatar_url').eq('user_id', data.user.id);
   const profile = await supabase.from('user').select().eq('user_id', id);
 
-
   if (user.error || !user.data || user.data.length === 0 || profile.error || !profile.data) {
     return {
       redirect: {

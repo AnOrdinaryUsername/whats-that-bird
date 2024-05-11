@@ -145,7 +145,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     .from('user')
     .select('*, sighting(date, name, location, sighting_id)')
     .eq('user_id', id);
-  
+
   const avatar = await supabase.from('user').select('avatar_url').eq('user_id', data.user.id);
 
   if (sightings.error) {
