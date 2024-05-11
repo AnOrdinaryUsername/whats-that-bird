@@ -86,7 +86,7 @@ export default function Header({ hideButtons }: Props) {
           <Divider my="sm" />
 
           <Anchor href="/about" component={Link} className={classes.link}>
-            About
+            Features
           </Anchor>
           <Anchor href="/upload" component={Link} className={classes.link}>
             Identify Bird
@@ -104,7 +104,7 @@ export default function Header({ hideButtons }: Props) {
             <Button component={Link} variant="filled" href="/sign-up">
               Sign up
             </Button>
-            <Button component={Link} variant="subtle" href="/log-in">
+            <Button component={Link} variant="light" href="/log-in">
               Log in
             </Button>
           </Stack>
