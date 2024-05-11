@@ -15,7 +15,6 @@ interface Props {
 }
 
 export default function DasboardPage({ avatar_url, username, speciesCount, totalBirds }: Props) {
-  console.log(avatar_url);
 
   return (
     <AuthLayout username={username} avatar={avatar_url} pageTitle="Dashboard">

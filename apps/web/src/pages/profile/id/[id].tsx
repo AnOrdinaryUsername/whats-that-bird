@@ -71,7 +71,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const user = await supabase.from('user').select('avatar_url').eq('user_id', data.user.id);
   const profile = await supabase.from('user').select().eq('user_id', id);
 
-  console.log(profile);
 
   if (user.error || !user.data || user.data.length === 0 || profile.error || !profile.data) {
     return {
@@ -97,7 +96,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
-      avatar_url: user,
+      avatar_url: user.data[0].avatar_url,
       username: data.user.user_metadata.username,
       profileName: profile.data![0].username,
       user_id: profile.data![0].user_id,

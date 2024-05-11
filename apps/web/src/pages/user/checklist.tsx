@@ -158,7 +158,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  //console.log(sightings.data[0].sighting);
 
   const birdCount = await getTotalBirdSpecies();
   const species = await getAllBirdSecies();
