@@ -13,8 +13,6 @@ import {
   Space,
 } from '@mantine/core';
 import type { GetServerSidePropsContext } from 'next';
-import { useRouter } from 'next/router';
-import { createClient } from '@/utils/supabase/component';
 import { createClient as createServerClient } from '@/utils/supabase/server-props';
 import { LifeList, SpeciesProgress } from '@/views/checklist';
 import Link from 'next/link';
@@ -22,7 +20,6 @@ import { AuthLayout } from '@/components/Layouts';
 import { getAllBirdSecies, getTotalBirdSpecies } from '@/utils/supabase/birds';
 import { IconPencilPlus } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
-import SightingModal from '@/components/SightingModal';
 import { useState } from 'react';
 import type { Sighting } from '@/types';
 
@@ -32,7 +29,6 @@ interface Props {
   avatar_url: string;
   birds: Sighting[];
   totalBirds: number;
-  species: Array<string>;
 }
 
 export default function IdChecklistPage({
@@ -41,7 +37,6 @@ export default function IdChecklistPage({
   avatar_url,
   birds,
   totalBirds,
-  species,
 }: Props) {
   const [birdsList, setBirdsList] = useState<Sighting[]>(birds);
   const [birdCount, setBirdCount] = useState<number>(birdsList.length);
@@ -150,6 +145,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     .from('user')
     .select('*, sighting(date, name, location, sighting_id)')
     .eq('user_id', id);
+  
+  const avatar = await supabase.from('user').select('avatar_url').eq('user_id', data.user.id);
 
   if (sightings.error) {
     return {
@@ -161,15 +158,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const birdCount = await getTotalBirdSpecies();
-  const species = await getAllBirdSecies();
 
   return {
     props: {
+      avatar_url: avatar.data![0].avatar_url,
       username: data.user.user_metadata.username,
       checklistUsername: user.data[0].username,
       birds: sightings.data[0].sighting,
       totalBirds: birdCount.total,
-      species: species.birds,
     },
   };
 }
