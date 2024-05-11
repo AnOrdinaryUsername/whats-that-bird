@@ -7,7 +7,7 @@ interface Props {
 
 export default function WelcomeBox({ username }: Props) {
   return (
-    <Container className={classes.background} p={rem(96)} pb={rem(76)}>
+    <Container className={classes.background}>
       <Title component="div" fz={rem(24)} fw={300}>
         Welcome back,
       </Title>

@@ -1,8 +1,14 @@
 .background {
     background-color: #4B5366;
+    width: 100%;
 
     & > * {
         color: white;
+    }
+
+    @media (min-width: $mantine-breakpoint-lg) {
+        min-width: rem(360px);
+        width: auto;
     }
 }
 

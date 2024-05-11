@@ -7,7 +7,7 @@ interface Props {
 
 export default function SpeciesProgress({ percentage }: Props) {
   return (
-    <Container className={classes.background} h="100%" mih={rem(300)}>
+    <Container className={classes.background} mih={rem(300)}>
       <Center p={rem(24)} h="100%">
         <RingProgress
           label={<CompletionLabel percentage={percentage} />}

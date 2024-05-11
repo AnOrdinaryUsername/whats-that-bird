@@ -9,6 +9,8 @@ import {
   Tooltip,
   ActionIcon,
   Stack,
+  Group,
+  Space,
 } from '@mantine/core';
 import type { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
@@ -22,31 +24,31 @@ import { IconPencilPlus } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import SightingModal from '@/components/SightingModal';
 import { useState } from 'react';
-
-interface Sighting {
-  date: string;
-  name: string;
-  location: string;
-  sighting_id: string;
-}
+import type { Sighting } from '@/types';
 
 interface Props {
   username: string;
   birds: Array<Sighting>;
   totalBirds: number;
   species: Array<string>;
+  avatar_url: string;
 }
 
-export default function ChecklistPage({ username, birds, totalBirds, species }: Props) {
+export default function ChecklistPage({ username, avatar_url, birds, totalBirds, species }: Props) {
   const [birdsList, setBirdsList] = useState<Sighting[]>(birds);
+  const [birdCount, setBirdCount] = useState<number>(birdsList.length);
   const [opened, { open, close }] = useDisclosure(false);
+
+  if (birdsList.length !== birdCount) {
+    setBirdCount(birdsList.length);
+  }
 
   const rows = birdsList.map(({ date, name, location, sighting_id }: Sighting) => (
     <Table.Tr key={sighting_id}>
       <Table.Td>{name}</Table.Td>
       <Table.Td>{new Date(date).toDateString()}</Table.Td>
       <Table.Td>
-        <Anchor component={Link} href={`/sighting/${sighting_id}`}>
+        <Anchor component={Link} href={`/sightings/${sighting_id}`}>
           {location}
         </Anchor>
       </Table.Td>
@@ -60,17 +62,11 @@ export default function ChecklistPage({ username, birds, totalBirds, species }: 
   }
 
   return (
-    <AuthLayout username={username} avatar={null} pageTitle="My Life List" pos="relative">
-      <Grid w="100%" justify="stretch" align="stretch">
-        <Grid.Col span={8} mah={rem(300)}>
-          <LifeList username={username} count={birds.length} total={totalBirds} />
-        </Grid.Col>
-        <Grid.Col span={4} mah={rem(300)}>
-          <SpeciesProgress
-            percentage={Number(createReadablePercentage(birds.length / totalBirds))}
-          />
-        </Grid.Col>
-      </Grid>
+    <AuthLayout username={username} avatar={avatar_url} pageTitle="My Life List" pos="relative">
+      <Group w="100%" justify="stretch" align="stretch">
+        <LifeList username={username} count={birdCount} total={totalBirds} />
+        <SpeciesProgress percentage={Number(createReadablePercentage(birdCount / totalBirds))} />
+      </Group>
       <Table mt={rem(36)} striped highlightOnHover>
         <Table.Thead>
           <Table.Tr>
@@ -79,15 +75,15 @@ export default function ChecklistPage({ username, birds, totalBirds, species }: 
             <Table.Th>Location</Table.Th>
           </Table.Tr>
         </Table.Thead>
-        {birds.length !== 0 && <Table.Tbody>{rows}</Table.Tbody>}
+        {birdCount !== 0 && <Table.Tbody>{rows}</Table.Tbody>}
       </Table>
-      {birds.length === 0 && (
+      {birdCount === 0 && (
         <Stack align="center" justify="center" mih={rem(300)}>
           <Title order={2} fw={400} fz={rem(36)} mt={rem(40)}>
             Oh no!
           </Title>
           <Stack gap="xs" align="center">
-            <Text>You haven't recorded any sightings yet!</Text>
+            <Text>You haven&apos;t recorded any sightings yet!</Text>
             <Text>Click the button below (or to the bottom right) to add a bird.</Text>
           </Stack>
           <Button
@@ -98,7 +94,13 @@ export default function ChecklistPage({ username, birds, totalBirds, species }: 
           </Button>
         </Stack>
       )}
-      <SightingModal opened={opened} onClose={close} speciesList={species} onUpdate={setBirdsList} />
+      <Space h={rem(80)} />
+      <SightingModal
+        opened={opened}
+        onClose={close}
+        speciesList={species}
+        onUpdate={setBirdsList}
+      />
       <Tooltip
         label="Add to List"
         color="dark"
@@ -145,6 +147,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     .select('*, sighting(date, name, location, sighting_id)')
     .eq('user_id', data.user.id);
 
+  const user = await supabase.from('user').select('avatar_url').eq('user_id', data.user.id);
+
   if (sightings.error) {
     return {
       redirect: {
@@ -165,6 +169,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       birds: sightings.data[0].sighting,
       totalBirds: birdCount.total,
       species: species.birds,
+      avatar_url: user.data![0].avatar_url,
     },
   };
 }

@@ -268,7 +268,7 @@ export default function UploadPage() {
     const url =
       process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.backendUrl;
 
-    fetch(`${url}/api/upload`, {
+    fetch(`${url}/api/upload/predict`, {
       method: 'POST',
       body: formData,
     })

@@ -1,4 +1,4 @@
-import { Grid, rem, Stack } from '@mantine/core';
+import { Group, rem, Stack } from '@mantine/core';
 import { SpeciesCounter, WelcomeBox } from '@/views/dashboard';
 import type { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
@@ -15,20 +15,15 @@ interface Props {
 }
 
 export default function DasboardPage({ avatar_url, username, speciesCount, totalBirds }: Props) {
-  const router = useRouter();
-  const supabase = createClient();
+  console.log(avatar_url);
 
   return (
-    <AuthLayout username={username} avatar={null} pageTitle="Dashboard">
+    <AuthLayout username={username} avatar={avatar_url} pageTitle="Dashboard">
       <Stack h="100%" w="100%">
-        <Grid w="100%" justify="center" align="stretch">
-          <Grid.Col span={8} mah={rem(300)}>
-            <WelcomeBox username={username} />
-          </Grid.Col>
-          <Grid.Col span={4} mah={rem(300)}>
-            <SpeciesCounter count={speciesCount} total={totalBirds} />
-          </Grid.Col>
-        </Grid>
+        <Group w="100%" justify="center" align="stretch">
+          <WelcomeBox username={username} />
+          <SpeciesCounter count={speciesCount} total={totalBirds} checklistPath="/user/checklist" />
+        </Group>
       </Stack>
     </AuthLayout>
   );

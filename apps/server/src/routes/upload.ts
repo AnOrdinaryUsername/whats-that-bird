@@ -25,7 +25,38 @@ const options = {
 
 
 const upload: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-    fastify.post('/upload', { config: options }, async function (request, reply) {
+    fastify.post('/upload', async function(request, reply) {
+        const image = await request.file();
+
+        if (!image) {
+            reply
+                .status(400)
+                .header('Content-Type', 'application/json')
+                .send({ result: 'error' });
+            return;
+        }
+
+        const extension = mime.extension(image.mimetype);
+        const filename = `${crypto.randomUUID()}.${extension}`;
+
+        const putObjectCommand = new PutObjectCommand({
+            Bucket: process.env.AWS_BUCKET,
+            Key: filename,
+            Body: await image.toBuffer(),
+            ContentType: image.mimetype,
+        });
+
+        await s3.send(putObjectCommand);
+        
+        const { CLOUDFRONT_URL } = process.env;
+
+        reply
+            .status(200)
+            .header('Content-Type', 'application/json')
+            .send({ result: 'ok', image_url: `https://${CLOUDFRONT_URL}/${filename}` });
+    });
+
+    fastify.post('/upload/predict', { config: options }, async function (request, reply) {
         const image = await request.file();
 
         if (!image) {

@@ -1,23 +1,23 @@
 import {
-  Accordion,
   Button,
   Group,
-  Image,
   Modal,
   ScrollArea,
   Stack,
-  Title,
   TextInput,
   rem,
   ModalBaseProps,
   Autocomplete,
   FileInput,
+  LoadingOverlay,
 } from '@mantine/core';
 import React, { useState } from 'react';
 import { DateTimePicker } from '@mantine/dates';
 import '@mantine/dates/styles.css';
 import { useForm } from '@mantine/form';
 import { createClient } from '@/utils/supabase/component';
+import { notifications } from '@mantine/notifications';
+import { verfiyBird } from '@/utils/supabase/birds';
 
 interface Props extends ModalBaseProps {
   speciesList: Array<string>;
@@ -32,7 +32,7 @@ interface FormValues {
 
 export default function SightingModal({ opened, onClose, onUpdate, speciesList }: Props) {
   const supabase = createClient();
-  const [value, setValue] = useState<Date | null>(null);
+  const [dateTime, setDateTime] = useState<Date | null>(null);
   const form = useForm<FormValues>({
     initialValues: {
       species: '',
@@ -40,31 +40,114 @@ export default function SightingModal({ opened, onClose, onUpdate, speciesList }
       image: null,
     },
   });
-
-  //if (value) console.log(new Date(value).toISOString());
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function submitSighting() {
+    setIsLoading(true);
     const { species, location, image } = form.values;
-    
-    if (!value) {
+
+    const name = await verfiyBird(species);
+
+    if (name.result === 'error') {
+      setIsLoading(false);
+      notifications.show({
+        withCloseButton: true,
+        autoClose: 30000,
+        title: 'Name Error',
+        message: name.reason,
+        color: 'red',
+        loading: false,
+      });
       return;
+    }
+
+    if (!dateTime) {
+      setIsLoading(false);
+      notifications.show({
+        withCloseButton: true,
+        autoClose: 30000,
+        title: 'Date Error',
+        message: 'Date is empty. Please enter a date into the field.',
+        color: 'red',
+        loading: false,
+      });
+      return;
+    }
+
+    if (location.length < 3) {
+      setIsLoading(false);
+      notifications.show({
+        withCloseButton: true,
+        autoClose: 30000,
+        title: 'Date Error',
+        message: 'Location name is too short (4 characters minimum).',
+        color: 'red',
+        loading: false,
+      });
+      return;
+    }
+
+    let result: { result: 'ok'; image_url: string } | null = null;
+
+    if (image) {
+      const formData = new FormData();
+      formData.append('file', image);
+
+      const url =
+        process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.backendUrl;
+
+      result = await fetch(`${url}/api/upload`, {
+        method: 'POST',
+        body: formData,
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(
+              'There seems to be a problem with the server at the moment. Please try again later.',
+            );
+          }
+          return res.json();
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          notifications.show({
+            withCloseButton: true,
+            autoClose: 30000,
+            title: 'Upload Image Error',
+            message: error.message,
+            color: 'red',
+            loading: false,
+          });
+        });
     }
 
     const { data, error } = await supabase
-        .from('sighting')
-        .insert({ date: new Date(value).toISOString(), name: species, location, image_url: null })
-        .select();
-    
+      .from('sighting')
+      .insert({
+        date: new Date(dateTime).toISOString(),
+        name: species,
+        location,
+        image_url: result?.image_url,
+      })
+      .select();
+
     if (error) {
-      console.error(error);
+      setIsLoading(false);
+      notifications.show({
+        withCloseButton: true,
+        autoClose: 30000,
+        title: 'Upload Error',
+        message: 'Unable to upload data. Please try again later.',
+        color: 'red',
+        loading: false,
+      });
       return;
     }
-    
-    console.log(data)
+
+    setIsLoading(false);
     onClose();
     onUpdate((prevState: any) => [...prevState, data[0]]);
   }
-
 
   return (
     <Modal.Root
@@ -75,10 +158,11 @@ export default function SightingModal({ opened, onClose, onUpdate, speciesList }
       centered
     >
       <Modal.Overlay />
-      <Modal.Content>
+      <Modal.Content pos="relative">
         <Modal.Header p={rem(32)} pb={0}>
           <Modal.CloseButton />
         </Modal.Header>
+        <LoadingOverlay visible={isLoading} />
         <form onSubmit={form.onSubmit(submitSighting)}>
           <Modal.Body pl={rem(32)} pr={rem(32)} pb={rem(32)} pt={0}>
             <Stack align="stretch">
@@ -109,8 +193,8 @@ export default function SightingModal({ opened, onClose, onUpdate, speciesList }
               <DateTimePicker
                 label="Date and time"
                 withAsterisk
-                value={value}
-                onChange={setValue}
+                value={dateTime}
+                onChange={setDateTime}
                 clearable
                 defaultValue={new Date()}
               />

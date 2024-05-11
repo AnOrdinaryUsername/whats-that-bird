@@ -28,7 +28,6 @@ const links = [
   { link: '/user/dashboard', label: 'Dashboard' },
   { link: '/user/checklist', label: 'Checklist' },
   { link: '/community/sightings', label: 'Sightings' },
-  { link: '/community/forum', label: 'Forum' },
 ];
 
 interface Props {
@@ -96,40 +95,6 @@ export default function SimpleHeader({ name, image }: Props) {
             </UnstyledButton>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item
-              leftSection={
-                <IconHeart
-                  style={{ width: rem(16), height: rem(16) }}
-                  color={theme.colors.red[6]}
-                  stroke={1.5}
-                />
-              }
-            >
-              Liked posts
-            </Menu.Item>
-            <Menu.Item
-              leftSection={
-                <IconStar
-                  style={{ width: rem(16), height: rem(16) }}
-                  color={theme.colors.yellow[6]}
-                  stroke={1.5}
-                />
-              }
-            >
-              Saved posts
-            </Menu.Item>
-            <Menu.Item
-              leftSection={
-                <IconMessage
-                  style={{ width: rem(16), height: rem(16) }}
-                  color={theme.colors.blue[6]}
-                  stroke={1.5}
-                />
-              }
-            >
-              Your comments
-            </Menu.Item>
-
             <Menu.Label>Settings</Menu.Label>
             <Menu.Item
               leftSection={

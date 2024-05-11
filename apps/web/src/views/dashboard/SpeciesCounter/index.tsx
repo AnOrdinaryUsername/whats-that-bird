@@ -17,9 +17,10 @@ import classes from './SpeciesCounter.module.css';
 interface Props {
   count: number;
   total: number;
+  checklistPath: string;
 }
 
-export default function SpeciesCounter({ count, total }: Props) {
+export default function SpeciesCounter({ count, total, checklistPath }: Props) {
   const theme = useMantineTheme();
 
   return (
@@ -29,7 +30,7 @@ export default function SpeciesCounter({ count, total }: Props) {
       pt={rem(24)}
       pl={rem(24)}
       pr={rem(24)}
-      h="100%"
+      mih={rem(300)}
     >
       <Stack justify="space-between" h="100%">
         <Group justify="space-between">
@@ -43,7 +44,7 @@ export default function SpeciesCounter({ count, total }: Props) {
             radius="xl"
             aria-label="Go to checklist"
             component={Link}
-            href="/user/checklist"
+            href={checklistPath}
           >
             <IconArrowUpRight style={{ width: '70%', height: '70%' }} stroke={1.5} />
           </ActionIcon>

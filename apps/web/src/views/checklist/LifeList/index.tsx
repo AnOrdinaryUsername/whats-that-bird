@@ -13,12 +13,12 @@ export default function LifeList({ username, count, total }: Props) {
   }
 
   return (
-    <Container className={classes.background} p={rem(96)} pb={rem(76)} h="100%" mih={rem(300)}>
+    <Container className={classes.background}>
       <Stack justify="center" h="100%" gap="xs">
-        <Title order={1} fw={400} fz={rem(48)} lh={1}>
+        <Title order={1} className={classes.title}>
           {capitalize(username) || 'user'}&apos;s Life List
         </Title>
-        <Title component="div" fz={rem(20)} fw={300}>
+        <Title component="div" className={classes.count}>
           {count} / {total} Species Found
         </Title>
       </Stack>

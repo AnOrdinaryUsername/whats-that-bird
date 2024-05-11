@@ -1,54 +1,130 @@
-import { Avatar, Button, Container, Grid, rem, Stack, Text, Title } from '@mantine/core';
-import SimpleHeader from '@/components/SimpleHeader';
-import { SpeciesCounter, WelcomeBox } from '@/views/dashboard';
+import { Title, Stack, Divider, FileInput, Button, rem } from '@mantine/core';
 import type { GetServerSidePropsContext } from 'next';
-import { useRouter } from 'next/router';
-import { createClient } from '@/utils/supabase/component';
 import { createClient as createServerClient } from '@/utils/supabase/server-props';
+import { AuthLayout } from '@/components/Layouts';
+import React, { useState } from 'react';
+import '@mantine/dates/styles.css';
+import { useForm } from '@mantine/form';
+import { createClient } from '@/utils/supabase/component';
+import { notifications } from '@mantine/notifications';
 
-interface Props {
-  avatar_url: string;
-  username: string;
-  speciesCount: number;
-  totalBirds: number;
+interface FormValues {
+  image: File | null;
 }
 
-export default function SettingsPage({ avatar_url, username, speciesCount, totalBirds }: Props) {
-  const router = useRouter();
+interface Props {
+  username: string;
+  avatar_url: string;
+  user_id: string;
+}
+
+export default function SightingsPage({ username, avatar_url, user_id }: Props) {
   const supabase = createClient();
+  const [avatarImage, setAvatarImage] = useState<string>(avatar_url);
 
-  async function signOut() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  const form = useForm<FormValues>({
+    initialValues: {
+      image: null,
+    },
+  });
 
-    if (user) {
-      const { error } = await supabase.auth.signOut();
+  async function updateSettings() {
+    const { image } = form.values;
+    let result: { result: 'ok'; image_url: string } | null = null;
 
-      if (error) {
-        console.error(error);
-      }
+    if (!image) {
+      notifications.show({
+        withCloseButton: true,
+        autoClose: 30000,
+        title: 'Upload Error',
+        message: 'No image was entered.',
+        color: 'red',
+        loading: false,
+      });
+      return;
     }
 
-    router.push('/');
+    const formData = new FormData();
+    formData.append('file', image);
+
+    const url =
+      process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.backendUrl;
+
+    result = await fetch(`${url}/api/upload`, {
+      method: 'POST',
+      body: formData,
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(
+            'There seems to be a problem with the server at the moment. Please try again later.',
+          );
+        }
+        return res.json();
+      })
+      .catch((error) => {
+        notifications.show({
+          withCloseButton: true,
+          autoClose: 30000,
+          title: 'Upload Image Error',
+          message: error.message,
+          color: 'red',
+          loading: false,
+        });
+      });
+
+    const { error } = await supabase
+      .from('user')
+      .update({
+        avatar_url: result?.image_url,
+      })
+      .eq('user_id', user_id);
+
+    if (error) {
+      notifications.show({
+        withCloseButton: true,
+        autoClose: 30000,
+        title: 'Upload Error',
+        message: 'Unable to upload data. Please try again later.',
+        color: 'red',
+        loading: false,
+      });
+      return;
+    }
+
+    notifications.show({
+      withCloseButton: true,
+      autoClose: 30000,
+      title: 'Success!',
+      message: 'Your avatar has been updated.',
+      color: 'green',
+      loading: false,
+    });
+    setAvatarImage(result!.image_url);
   }
 
   return (
-    <>
-      <SimpleHeader name={username} image={avatar_url} />
-      <Container h="100%" size="xl">
-        <Stack h="100%" w="100%">
-          <Grid w="100%" justify="center" align="stretch">
-            <Grid.Col span={8} mah={rem(300)}>
-              <WelcomeBox username={username} />
-            </Grid.Col>
-            <Grid.Col span={4} mah={rem(300)}>
-              <SpeciesCounter count={speciesCount} total={totalBirds} />
-            </Grid.Col>
-          </Grid>
-        </Stack>
-      </Container>
-    </>
+    <AuthLayout username={username} avatar={avatarImage} pageTitle="Settings">
+      <Stack h="100%" w="100%" gap="xs">
+        <Title order={1} fw={500}>
+          Sightings
+        </Title>
+        <Divider w="100%" my="md" />
+        <form onSubmit={form.onSubmit(updateSettings)}>
+          <Stack maw={rem(400)} w="100%">
+            <FileInput
+              label="Image"
+              description="Add your avatar image"
+              accept="image/*"
+              {...form.getInputProps('image')}
+            />
+            <Button variant="filled" type="submit" maw={rem(200)}>
+              Update Settings
+            </Button>
+          </Stack>
+        </form>
+      </Stack>
+    </AuthLayout>
   );
 }
 
@@ -67,25 +143,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const user = await supabase.from('user').select().eq('user_id', data.user.id);
-  const species = await supabase
-    .from('user')
-    .select(
-      `
-    user_id,
-    sighting (
-      user_id,
-      name
-    )
-  `,
-    )
-    .eq('user_id', data.user.id);
 
-  const url =
-    process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.backendUrl;
-
-  const birdCount = await fetch(`${url}/api/birds/count`).then((res) => res.json());
-
-  if (species.error) {
+  if (user.error) {
     return {
       redirect: {
         destination: '/error',
@@ -97,8 +156,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
       ...user.data![0],
-      speciesCount: species.data![0].sighting.length,
-      totalBirds: birdCount.total,
     },
   };
 }
